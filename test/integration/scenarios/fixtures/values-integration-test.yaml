@@ -1,6 +1,3 @@
-test:
-  integration: true
-
 # TODO: Remove readinessProbe once it's enabled by default (planned for v8.2).
 operate:
   readinessProbe:
@@ -84,6 +81,9 @@ identity:
       - name: index-docker-io
 
 global:
+  test:
+    integration:
+      enabled: true
   image:
     pullSecrets:
     - name: index-docker-io
