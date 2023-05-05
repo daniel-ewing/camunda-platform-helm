@@ -1,0 +1,84 @@
+# Chart values for the Camunda Platform 8 Helm chart in combined ingress setup.
+# You can change the global.image.tag version value as needed, just don't delete comment that follows it.
+global:
+  image:
+    tag: 8.1.5
+
+  ingress:
+    enabled: true
+    host: "c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-combined-tls"
+
+  identity:
+    auth:
+      publicIssuerUrl: "https://c8.dev.local/auth/realms/camunda-platform"
+      operate:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://c8.dev.local/operate"
+      tasklist:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://c8.dev.local/tasklist"
+      optimize:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://c8.dev.local/optimize"
+
+# Reduce Zeebe and Gateway replicas and resources to make it run locally
+zeebe:
+  clusterSize: 1
+  partitionCount: 1
+  replicationFactor: 1
+  pvcSize: 8Gi
+
+zeebe-gateway:
+  replicas: 1
+  ingress:
+    enabled: true
+    host: "zeebe.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-combined-tls"
+
+operate:
+  contextPath: "/operate/"
+
+tasklist:
+  contextPath: "/tasklist/"
+
+optimize:
+  contextPath: "/optimize"
+
+identity:
+  fullURL: "https://c8.dev.local/identity"
+  contextPath: "/identity/"
+  keycloak:
+    auth:
+      adminPassword: SetThisToMakeLoginEasy
+      managementPassword: SetThisToMakeLoginEasy
+    postgresql:
+      auth:
+        password: SetThisToMakeLoginEasy
+
+# Reduce Elasticsearch replicas and resources to make it run locally
+elasticsearch:
+  imageTag: 7.17.3
+  replicas: 1
+  minimumMasterNodes: 1
+  # Allow no backup for single node setups
+  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
+  # Allocate smaller chunks of memory per pod.
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "2G"
+    limits:
+      cpu: "1000m"
+      memory: "2G"
+  # Request smaller persistent volumes.
+  volumeClaimTemplate:
+    accessModes: [ "ReadWriteOnce" ]
+    storageClassName: "standard"
+    resources:
+      requests:
+        storage: 8Gi

@@ -1,0 +1,93 @@
+global:
+  image:
+    tag: 8.1.5
+
+  ingress:
+    enabled: true
+    className: nginx
+    host: "c8.dev.local"
+
+  identity:
+    auth:
+      enabled: true
+      publicIssuerUrl: "http://keycloak.c8.dev.local/auth/realms/camunda-platform"
+      operate:
+        existingSecret: SetThisToMakeUpgradesEasy
+        redirectUrl: "http://c8.dev.local/operate"
+      tasklist:
+        existingSecret: SetThisToMakeUpgradesEasy
+        redirectUrl: "http://c8.dev.local/tasklist"
+      optimize:
+        existingSecret: SetThisToMakeUpgradesEasy
+        redirectUrl: "http://c8.dev.local/optimize"
+
+# Reduce Zeebe and Gateway replicas and resources to make it run locally
+zeebe:
+  clusterSize: 1
+  partitionCount: 1
+  replicationFactor: 1
+  pvcSize: 8Gi
+
+zeebe-gateway:
+  replicas: 1
+  service:
+    gatewayPort: 26500
+  ingress:
+    enabled: true
+    className: nginx
+    host: "zeebe.c8.dev.local"
+
+operate:
+  enabled: true
+  contextPath: "/operate"
+
+tasklist:
+  enabled: true
+  contextPath: "/tasklist"
+
+optimize:
+  enabled: true
+  contextPath: "/optimize"
+
+identity:
+  enabled: true
+  fullURL: "http://identity.c8.dev.local"
+  contextPath: "/"
+  ingress:
+    enabled: true
+    className: nginx
+    host: "identity.c8.dev.local"
+  keycloak:
+    auth:
+      adminPassword: SetThisToMakeUpgradesEasy
+      managementPassword: SetThisToMakeUpgradesEasy
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      hostname: "keycloak.c8.dev.local"
+    postgresql:
+      auth:
+        password: SetThisToMakeUpgradesEasy
+
+# Reduce Elasticsearch replicas and resources to make it run locally
+elasticsearch:
+  imageTag: 7.17.3
+  replicas: 1
+  minimumMasterNodes: 1
+  # Allow no backup for single node setups
+  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
+  # Allocate smaller chunks of memory per pod.
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "2G"
+    limits:
+      cpu: "1000m"
+      memory: "2G"
+  # Request smaller persistent volumes.
+  volumeClaimTemplate:
+    accessModes: [ "ReadWriteOnce" ]
+    storageClassName: "standard"
+    resources:
+      requests:
+        storage: 8Gi

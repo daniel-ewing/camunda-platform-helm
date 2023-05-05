@@ -1,0 +1,199 @@
+# Chart values for the Camunda Platform 8 Helm chart in combined ingress setup.
+# You can change the global.image.tag version value as needed, just don't delete comment that follows it.
+global:
+  image:
+    tag: 8.2.3
+
+  ingress:
+    enabled: true
+    host: "c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-combined"
+
+  identity:
+    auth:
+      publicIssuerUrl: "https://c8.dev.local/auth/realms/camunda-platform"
+      connectors:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+      operate:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://c8.dev.local/operate"
+      tasklist:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://c8.dev.local/tasklist"
+      optimize:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://c8.dev.local/optimize"
+      webModeler:
+        redirectUrl: "https://c8.dev.local/modeler"
+
+# Configure Zeebe and Gateway replicas and resources for local testing.
+zeebe:
+  clusterSize: 1
+  partitionCount: 1
+  replicationFactor: 1
+  pvcSize: 8Gi
+
+zeebe-gateway:
+  replicas: 1
+  ingress:
+    enabled: true
+    host: "zeebe.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-combined"
+
+operate:
+  contextPath: "/operate"
+# Configure resources for local testing.
+  resources:
+    requests:
+      cpu: 500m
+      memory: 400Mi
+    limits:
+      cpu: 1500m
+      memory: 1Gi
+
+tasklist:
+  contextPath: "/tasklist"
+# Configure resources for local testing.
+  resources:
+    requests:
+      cpu: 500m
+      memory: 500Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+
+optimize:
+  contextPath: "/optimize"
+# Configure resources for local testing.
+  resources:
+    requests:
+      cpu: 750m
+      memory: 768Mi
+    limits:
+      cpu: 1500m
+      memory: 1536Mi
+
+identity:
+  fullURL: "https://c8.dev.local/identity"
+  contextPath: "/identity"
+# Configure resources for local testing.
+  resources:
+    requests:
+      cpu: 750m
+      memory: 500Mi
+    limits:
+      cpu: 1500m
+      memory: 1536Mi
+  keycloak:
+    extraEnvVars:
+      - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
+        value: "true"
+    auth:
+      adminPassword: SetThisToMakeLoginEasy
+      managementPassword: SetThisToMakeLoginEasy
+    postgresql:
+      auth:
+        password: SetThisToMakeLoginEasy
+        postgresPassword: SetThisToMakeLoginEasy
+
+webModeler:
+  enabled: true
+  image:
+    tag: 8.2.0
+    pullSecrets:
+      - name: dev-c8-registry
+  contextPath: "/modeler"
+  restapi:
+    mail:
+      # Restapi.mail.smtpHost defines the host name of the SMTP server to be used by Web Modeler
+      smtpHost: ""
+      # Restapi.mail.smtpPort defines the port number of the SMTP server
+      smtpPort: 587
+      # Restapi.mail.smtpUser can be used to provide a user for the SMTP server
+      smtpUser: ""
+      # Restapi.mail.smtpPassword can be used to provide a password for the SMTP server
+      smtpPassword: ""
+      # Restapi.mail.smtpTlsEnabled if true, enforces TLS encryption for SMTP connections (using STARTTLS)
+      smtpTlsEnabled: true
+      # Restapi.mail.fromAddress defines the email address that will be displayed as the sender of emails sent by Web Modeler
+      fromAddress: "no-reply@camunda.com"
+      # Restapi.mail.fromName defines the name that will be displayed as the sender of emails sent by Web Modeler
+      fromName: "Camunda Platform"
+    env:
+#      - name: ZEEBE_INSECURE_CONNECTION
+#        value: "false"
+      - name: ZEEBE_CA_CERTIFICATE_PATH
+        value: "/home/node/dev.c8.combined.crt"
+    extraVolumes:
+      - name: dev-c8-combined
+        secret:
+          secretName: dev-c8-combined
+    extraVolumeMounts:
+      - name: dev-c8-combined
+        mountPath: "/home/node/dev.c8.combined.crt"
+        subPath: tls.crt
+# Configure resources for local testing.
+    resources:
+      requests:
+        cpu: 500m
+        memory: 768Mi
+      limits:
+        cpu: 1000m
+        memory: 1536Mi
+  webapp:
+    env:
+#      - name: ZEEBE_SECURE_CONNECTION
+#        value: "true"
+      - name: ZEEBE_CLIENT_SSL_ROOT_CERTS_PATH
+        value: "/home/node/dev.c8.combined.crt"
+    extraVolumes:
+      - name: dev-c8-combined
+        secret:
+          secretName: dev-c8-combined
+    extraVolumeMounts:
+      - name: dev-c8-combined
+        mountPath: "/home/node/dev.c8.combined.crt"
+        subPath: tls.crt
+
+postgresql:
+  enabled: true
+  auth:
+    password: SetThisToMakeLoginEasy
+    postgresPassword: SetThisToMakeLoginEasy
+
+connectors:
+  contextPath: "/connectors"
+# Configure resources for local testing.
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+
+# Configure Elasticsearch replicas and resources to make it run locally
+elasticsearch:
+  replicas: 1
+  minimumMasterNodes: 1
+  # Allow no backup for single node setups
+  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
+  # Allocate sufficient resources to start the pod.
+  resources:
+    requests:
+      cpu: 2000m
+      memory: 2Gi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+  # Request smaller persistent volumes.
+  volumeClaimTemplate:
+    accessModes: [ "ReadWriteOnce" ]
+    storageClassName: "standard"
+    resources:
+      requests:
+        storage: 8Gi

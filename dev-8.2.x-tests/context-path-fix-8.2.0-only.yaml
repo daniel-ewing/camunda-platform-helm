@@ -1,0 +1,22 @@
+operate:
+  readinessProbe:
+    probePath: /operate/actuator/health/readiness
+
+tasklist:
+  readinessProbe:
+    probePath: /tasklist/actuator/health/readiness
+
+optimize:
+  readinessProbe:
+    probePath: /optimize/api/readyz
+
+identity:
+  readinessProbe:
+    probePath: /identity/actuator/health
+
+connectors:
+  env:
+    - name: CAMUNDA_OPERATE_CLIENT_URL
+      value: https://c8.dev.local/operate
+  readinessProbe:
+    probePath: /connectors/actuator/health/readiness

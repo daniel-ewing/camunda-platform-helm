@@ -1,0 +1,170 @@
+# Chart values for the Camunda Platform 8 Helm chart in separate ingress setup. 
+# Note: you can change the global.image.tag version value as needed.
+global:
+  image:
+    tag: 8.1.9
+
+  identity:
+    auth:
+      publicIssuerUrl: "https://keycloak.c8.dev.local/auth/realms/camunda-platform"
+      operate:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://operate.c8.dev.local"
+      tasklist:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://tasklist.c8.dev.local"
+      optimize:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://optimize.c8.dev.local"
+      webModeler:
+        redirectUrl: "https://modeler.c8.dev.local"
+ 
+# Reduce Zeebe and Gateway replicas and resources to make it run locally
+zeebe:
+  clusterSize: 1
+  partitionCount: 1
+  replicationFactor: 1
+  pvcSize: 8Gi
+ 
+zeebe-gateway:
+  replicas: 1
+  ingress:
+    enabled: true
+    host: "zeebe.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separated"
+ 
+operate:
+  ingress:
+    enabled: true
+    host: "operate.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separated"
+ 
+tasklist:
+  ingress:
+    enabled: true
+    host: "tasklist.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separated"
+ 
+optimize:
+  ingress:
+    enabled: true
+    host: "optimize.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separated"
+ 
+identity:
+  fullURL: "https://identity.c8.dev.local"
+  keycloak:
+    extraEnvVars:
+      - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
+        value: "true"
+    ingress:
+      enabled: true
+      hostname: "keycloak.c8.dev.local"
+      tls:
+        enabled: true
+        secretName: "dev-c8-separated"
+    auth:
+      adminPassword: SetThisToMakeLoginEasy
+      managementPassword: SetThisToMakeLoginEasy
+    postgresql:
+      auth:
+        password: SetThisToMakeLoginEasy
+  ingress:
+    enabled: true
+    host: "identity.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separated"
+
+web-modeler:
+  enabled: true
+  image:
+    tag: 0.8.0-beta
+    pullSecrets:
+      - name: dev-c8-registry
+  restapi:
+    mail:
+      # Restapi.mail.smtpHost defines the host name of the SMTP server to be used by Web Modeler
+      smtpHost: ""
+      # Restapi.mail.smtpPort defines the port number of the SMTP server
+      smtpPort: 587
+      # Restapi.mail.smtpUser can be used to provide a user for the SMTP server
+      smtpUser: ""
+      # Restapi.mail.smtpPassword can be used to provide a password for the SMTP server
+      smtpPassword: ""
+      # Restapi.mail.smtpTlsEnabled if true, enforces TLS encryption for SMTP connections (using STARTTLS)
+      smtpTlsEnabled: true
+      # Restapi.mail.fromAddress defines the email address that will be displayed as the sender of emails sent by Web Modeler
+      fromAddress: "no-reply@camunda.com"
+      # Restapi.mail.fromName defines the name that will be displayed as the sender of emails sent by Web Modeler
+      fromName: "Camunda Platform"
+    env:
+      - name: ZEEBE_INSECURE_CONNECTION
+        value: "false"
+      - name: ZEEBE_CA_CERTIFICATE_PATH
+        value: "/home/runner/dev.c8.separate.crt"
+    extraVolumes:
+      - name: dev-c8-separated
+        secret:
+          secretName: dev-c8-separated
+    extraVolumeMounts:
+      - name: dev-c8-separated
+        mountPath: "/home/runner/dev.c8.separate.crt"
+        subPath: tls.crt
+  webapp:
+    env:
+      - name: ZEEBE_SECURE_CONNECTION
+        value: "true"
+      - name: ZEEBE_CLIENT_SSL_ROOT_CERTS_PATH
+        value: "/home/runner/dev.c8.separate.crt"
+    extraVolumes:
+      - name: dev-c8-separated
+        secret:
+          secretName: dev-c8-separated
+    extraVolumeMounts:
+      - name: dev-c8-separated
+        mountPath: "/home/runner/dev.c8.separate.crt"
+        subPath: tls.crt
+  ingress:
+    enabled: true
+    webapp:
+      host: "modeler.c8.dev.local"
+      tls:
+        enabled: true
+        secretName: "dev-c8-separated"
+    websockets:
+      host: "web-sockets.c8.dev.local"
+      tls:
+        enabled: true
+        secretName: "dev-c8-separated"
+  postgresql:
+    auth:
+      password: SetThisToMakeLoginEasy
+
+# Reduce Elasticsearch replicas and resources to make it run locally
+elasticsearch:
+#  imageTag: 7.17.3  # Uncomment this line and set a value if you want to override the default chart value.
+  replicas: 1
+  volumeClaimTemplate:
+    accessModes: [ "ReadWriteOnce" ]
+    storageClassName: "standard"
+    resources:
+      requests:
+        storage: 8Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 2Gi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+  minimumMasterNodes: 1
+  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"

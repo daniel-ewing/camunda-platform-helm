@@ -1,0 +1,100 @@
+# Chart values for the Camunda Platform 8 Helm chart in separate ingress setup.
+# You can change the global.image.tag version value as needed, just don't delete comment that follows it.
+global:
+  image:
+    tag: 8.1.5
+
+  identity:
+    auth:
+      publicIssuerUrl: "https://keycloak.c8.dev.local/auth/realms/camunda-platform"
+      operate:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://operate.c8.dev.local"
+      tasklist:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://tasklist.c8.dev.local"
+      optimize:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://optimize.c8.dev.local"
+
+# Reduce Zeebe and Gateway replicas and resources to make it run locally
+zeebe:
+  clusterSize: 1
+  partitionCount: 1
+  replicationFactor: 1
+  pvcSize: 8Gi
+
+zeebe-gateway:
+  replicas: 1
+  ingress:
+    enabled: true
+    host: "zeebe.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separatedd-tls"
+
+operate:
+  ingress:
+    enabled: true
+    host: "operate.c8.dev.local"
+    secretName: "dev-c8-separatedd-tls"
+
+tasklist:
+  ingress:
+    enabled: true
+    host: "tasklist.c8.dev.local"
+    secretName: "dev-c8-separatedd-tls"
+
+optimize:
+  ingress:
+    enabled: true
+    host: "optimize.c8.dev.local"
+    secretName: "dev-c8-separatedd-tls"
+
+identity:
+  fullURL: "https://identity.c8.dev.local"
+  keycloak:
+    extraEnvVars:
+      - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
+        value: "true"
+    ingress:
+      enabled: true
+      hostname: "keycloak.c8.dev.local"
+      tls:
+        enabled: true
+        secretName: "dev-c8-separatedd-tls"
+    auth:
+      adminPassword: SetThisToMakeLoginEasy
+      managementPassword: SetThisToMakeLoginEasy
+    postgresql:
+      auth:
+        password: SetThisToMakeLoginEasy
+  ingress:
+    enabled: true
+    host: "identity.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separatedd-tls"
+
+# Reduce Elasticsearch replicas and resources to make it run locally
+elasticsearch:
+  imageTag: 7.17.3
+  replicas: 1
+  minimumMasterNodes: 1
+  # Allow no backup for single node setups
+  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
+  # Allocate smaller chunks of memory per pod.
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "2G"
+    limits:
+      cpu: "1000m"
+      memory: "2G"
+  # Request smaller persistent volumes.
+  volumeClaimTemplate:
+    accessModes: [ "ReadWriteOnce" ]
+    storageClassName: "standard"
+    resources:
+      requests:
+        storage: 8Gi
