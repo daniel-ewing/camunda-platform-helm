@@ -156,13 +156,16 @@ web-modeler:
         enabled: true
         secretName: "dev-c8-separated"
     websockets:
-      host: "web-sockets.c8.dev.local"
+      host: "websockets.c8.dev.local"
       tls:
         enabled: true
         secretName: "dev-c8-separated"
-  postgresql:
-    auth:
-      password: SetThisToMakeLoginEasy
+
+postgresql:
+  enabled: true
+  auth:
+    password: SetThisToMakeLoginEasy
+    postgresPassword: SetThisToMakeLoginEasy
 
 # Reduce Elasticsearch replicas and resources to make it run locally
 elasticsearch:

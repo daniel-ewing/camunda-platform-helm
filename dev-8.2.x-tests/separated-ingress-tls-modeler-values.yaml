@@ -2,7 +2,7 @@
 # Note: you can change the global.image.tag version value as needed.
 global:
   image:
-    tag: 8.2.0
+    tag: 8.2.3
 
   identity:
     auth:
@@ -77,6 +77,7 @@ identity:
     postgresql:
       auth:
         password: SetThisToMakeLoginEasy
+        postgresPassword: SetThisToMakeLoginEasy
   ingress:
     enabled: true
     host: "identity.c8.dev.local"
@@ -87,7 +88,7 @@ identity:
 webModeler:
   enabled: true
   image:
-    tag: 8.2.0
+    tag: 8.2.1
     pullSecrets:
       - name: dev-c8-registry
   restapi:
@@ -107,8 +108,8 @@ webModeler:
       # Restapi.mail.fromName defines the name that will be displayed as the sender of emails sent by Web Modeler
       fromName: "Camunda Platform"
     env:
-      - name: ZEEBE_INSECURE_CONNECTION
-        value: "false"
+#      - name: ZEEBE_INSECURE_CONNECTION
+#        value: "false"
       - name: ZEEBE_CA_CERTIFICATE_PATH
         value: "/home/runner/dev.c8.separate.crt"
     extraVolumes:
@@ -121,17 +122,19 @@ webModeler:
         subPath: tls.crt
   webapp:
     env:
-      - name: ZEEBE_SECURE_CONNECTION
-        value: "true"
+#      - name: ZEEBE_SECURE_CONNECTION
+#        value: "true"
       - name: ZEEBE_CLIENT_SSL_ROOT_CERTS_PATH
-        value: "/home/runner/dev.c8.separate.crt"
+        value: "/home/node/dev.c8.separate.crt"
+      - name: LOGGING_LEVEL_IO_GRPC
+        value: TRACE
     extraVolumes:
       - name: dev-c8-separated
         secret:
           secretName: dev-c8-separated
     extraVolumeMounts:
       - name: dev-c8-separated
-        mountPath: "/home/runner/dev.c8.separate.crt"
+        mountPath: "/home/node/dev.c8.separate.crt"
         subPath: tls.crt
   ingress:
     enabled: true
@@ -141,13 +144,16 @@ webModeler:
         enabled: true
         secretName: "dev-c8-separated"
     websockets:
-      host: "web-sockets.c8.dev.local"
+      host: "websockets.c8.dev.local"
       tls:
         enabled: true
         secretName: "dev-c8-separated"
-  postgresql:
-    auth:
-      password: SetThisToMakeLoginEasy
+
+postgresql:
+  enabled: true
+  auth:
+    password: SetThisToMakeLoginEasy
+    postgresPassword: SetThisToMakeLoginEasy
 
 # Reduce Elasticsearch replicas and resources to make it run locally
 elasticsearch:
@@ -161,10 +167,10 @@ elasticsearch:
         storage: 8Gi
   resources:
     requests:
-      cpu: "100m"
-      memory: "2G"
+      cpu: 1000m
+      memory: 2Gi
     limits:
-      cpu: "1000m"
-      memory: "2G"
+      cpu: 2000m
+      memory: 2Gi
   minimumMasterNodes: 1
   clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
