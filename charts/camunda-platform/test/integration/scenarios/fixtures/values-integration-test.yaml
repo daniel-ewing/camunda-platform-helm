@@ -51,6 +51,11 @@ identity:
     value: optimize-api
   - name: KEYCLOAK_CLIENTS_2_PERMISSIONS_6_DEFINITION
     value: "write:*"
+  # Zeebe access.
+  - name: KEYCLOAK_CLIENTS_2_PERMISSIONS_7_RESOURCE_SERVER_ID
+    value: zeebe-api
+  - name: KEYCLOAK_CLIENTS_2_PERMISSIONS_7_DEFINITION
+    value: "write:*"
   # WebModeler access.
   # NOTE: This actually should be only in the chart-with-web-modeler scenarios,
   # but since Helm doesn't support merge lists it's added here.
