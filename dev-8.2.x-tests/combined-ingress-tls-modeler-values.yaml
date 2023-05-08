@@ -170,11 +170,11 @@ connectors:
 # Configure resources for local testing.
   resources:
     requests:
-      cpu: 500m
-      memory: 512Mi
+      cpu: 250m
+      memory: 256Mi
     limits:
-      cpu: 1000m
-      memory: 1Gi
+      cpu: 500m
+      memory: 768Mi
 
 # Configure Elasticsearch replicas and resources to make it run locally
 elasticsearch:
@@ -185,10 +185,10 @@ elasticsearch:
   # Allocate sufficient resources to start the pod.
   resources:
     requests:
-      cpu: 2000m
+      cpu: 500m
       memory: 2Gi
     limits:
-      cpu: 2000m
+      cpu: 1000m
       memory: 2Gi
   # Request smaller persistent volumes.
   volumeClaimTemplate:
