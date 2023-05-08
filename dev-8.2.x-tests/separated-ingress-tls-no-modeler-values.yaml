@@ -69,6 +69,7 @@ identity:
     postgresql:
       auth:
         password: SetThisToMakeLoginEasy
+        postgresPassword: SetThisToMakeLoginEasy
   ingress:
     enabled: true
     host: "identity.c8.dev.local"
@@ -86,11 +87,11 @@ elasticsearch:
   # Allocate smaller chunks of memory per pod.
   resources:
     requests:
-      cpu: "100m"
-      memory: "2G"
+      cpu: 500m
+      memory: 2Gi
     limits:
-      cpu: "1000m"
-      memory: "2G"
+      cpu: 1000m
+      memory: 2Gi
   # Request smaller persistent volumes.
   volumeClaimTemplate:
     accessModes: [ "ReadWriteOnce" ]

@@ -7,6 +7,8 @@ global:
   identity:
     auth:
       publicIssuerUrl: "https://keycloak.c8.dev.local/auth/realms/camunda-platform"
+      connectors:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
       operate:
         existingSecret: SetThisToMakeHelmUpgradesEasy
         redirectUrl: "https://operate.c8.dev.local"
@@ -110,8 +112,8 @@ webModeler:
     env:
 #      - name: ZEEBE_INSECURE_CONNECTION
 #        value: "false"
-#      - name: LOGGING_LEVEL_IO_GRPC
-#        value: TRACE
+      - name: LOGGING_LEVEL_IO_GRPC
+        value: TRACE
       - name: ZEEBE_CA_CERTIFICATE_PATH
         value: "/home/runner/dev.c8.separate.crt"
     extraVolumes:
@@ -155,6 +157,22 @@ postgresql:
     password: SetThisToMakeLoginEasy
     postgresPassword: SetThisToMakeLoginEasy
 
+# Reduce Connectors resources for local testing
+connectors:
+  resources:
+    requests:
+      cpu: 500m
+      memory: 500Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  ingress:
+    enabled: true
+    host: "connectors.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separated"
+
 # Reduce Elasticsearch replicas and resources to make it run locally
 elasticsearch:
 #  imageTag: 7.17.3  # Uncomment this line and set a value if you want to override the default chart value.
@@ -167,10 +185,10 @@ elasticsearch:
         storage: 8Gi
   resources:
     requests:
-      cpu: 1000m
+      cpu: 500m
       memory: 2Gi
     limits:
-      cpu: 2000m
+      cpu: 1000m
       memory: 2Gi
   minimumMasterNodes: 1
   clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
