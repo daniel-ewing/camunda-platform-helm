@@ -110,6 +110,8 @@ webModeler:
     env:
 #      - name: ZEEBE_INSECURE_CONNECTION
 #        value: "false"
+#      - name: LOGGING_LEVEL_IO_GRPC
+#        value: TRACE
       - name: ZEEBE_CA_CERTIFICATE_PATH
         value: "/home/runner/dev.c8.separate.crt"
     extraVolumes:
