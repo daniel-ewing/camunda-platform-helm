@@ -16,7 +16,7 @@ kubectl exec <pod_name> -- printenv
 kubectl create -f pcv.yaml
 
 # Get the complete values.yaml for a specific version of a helm chart:
-helm show values camunda/camunda-platform --version 8.1.7 >~/temp/values-8.1.7.yaml
+helm show values camunda/camunda-platform --version 8.2.2 >~/temp/values-8.2.2.yaml
 
 
 # Secret management:
