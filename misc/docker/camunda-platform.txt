@@ -1,0 +1,86 @@
+Camunda Platform - https://docs.camunda.org/manual/7.14/installation/docker/:
+
+
+docker login registry.camunda.cloud
+
+
+docker run -d --name camunda-ee-7.13.8 -p 8080:8080 \
+           -v /home/administrator/.camunda/license.txt:/camunda/.camunda/license.txt:ro \
+           registry.camunda.cloud/cambpm-ee/camunda-bpm-platform-ee:7.13.8
+
+
+docker run -d --name camunda-ee-7.14.12 -p 8080:8080 \
+           -v /home/administrator/.camunda/license.txt:/camunda/.camunda/license.txt:ro \
+           registry.camunda.cloud/cambpm-ee/camunda-bpm-platform-ee:7.14.12
+
+
+docker run -d --name camunda-ee-7.15.0 -p 8080:8080 \
+           -v /home/administrator/.camunda/license.txt:/camunda/.camunda/license.txt:ro \
+           registry.camunda.cloud/cambpm-ee/camunda-bpm-platform-ee:7.15.0
+
+
+docker run -d --name camunda-ee-7.15.0 -p 8080:8080 \
+           -e DB_DRIVER=org.postgresql.Driver \
+           -e DB_URL=jdbc:postgresql://192.168.253.144/camunda \
+           -e DB_USERNAME=camunda \
+           -e DB_PASSWORD=Camunda1 \
+           -e DB_VALIDATE_ON_BORROW=true \
+           -e DB_VALIDATION_QUERY="select 1" \
+           -v /home/administrator/.camunda/license.txt:/camunda/.camunda/license.txt:ro \
+           registry.camunda.cloud/cambpm-ee/camunda-bpm-platform-ee:7.15.0
+           
+
+docker run -d --name camunda-ee-7.16.1 -p 8080:8080 \
+           -v /home/administrator/.camunda/license.txt:/camunda/.camunda/license.txt:ro \
+           registry.camunda.cloud/cambpm-ee/camunda-bpm-platform-ee:7.16.1
+
+
+docker run -d --name camunda-ee-7.16.1 -p 8080:8080 \
+           -e DB_DRIVER=org.postgresql.Driver \
+           -e DB_URL=jdbc:postgresql://192.168.253.144:5432/camunda \
+           -e DB_USERNAME=camunda \
+           -e DB_PASSWORD=Camunda1 \
+           -v /mnt/c/Users/Administrator/.camunda/license.txt:/camunda/.camunda/license.txt:ro \
+           registry.camunda.cloud/cambpm-ee/camunda-bpm-platform-ee:7.16.1
+           
+
+docker run -d --name camunda-ee-wildfly-7.16.7 -p 8080:8080 \
+           -e DB_DRIVER=org.postgresql.Driver \
+           -e DB_URL=jdbc:postgresql://192.168.253.144:5432/camunda \
+           -e DB_USERNAME=camunda \
+           -e DB_PASSWORD=Camunda1 \
+           -v /mnt/c/Users/Administrator/.camunda/license.txt:/camunda/.camunda/license.txt:ro \
+           registry.camunda.cloud/cambpm-ee/camunda-bpm-platform-ee:wildfly-7.16.7
+           
+
+docker run -d --name camunda-ee-wildfly-7.17.3 -p 8080:8080 \
+           -e DB_DRIVER=org.postgresql.Driver \
+           -e DB_URL=jdbc:postgresql://192.168.253.144:5432/camunda \
+           -e DB_USERNAME=camunda \
+           -e DB_PASSWORD=Camunda1 \
+           -v /mnt/c/Users/Administrator/.camunda/license.txt:/camunda/.camunda/license.txt:ro \
+           registry.camunda.cloud/cambpm-ee/camunda-bpm-platform-ee:wildfly-7.17.3
+           
+
+
+jdbc:postgresql://127.0.0.1:5432/camunda
+
+
+
+Camunda Run:
+
+
+docker login registry.camunda.cloud
+
+
+docker run -d --name camunda-run-ee-7.15.0 -p 8082:8080 \
+           registry.camunda.cloud/cambpm-ee/camunda-bpm-platform-ee:run-7.15.0
+
+
+docker run -d --name camunda-run-ee-7.17.0 -p 8081:8080 \
+           registry.camunda.cloud/cambpm-ee/camunda-bpm-platform-ee:run-7.17.0
+
+
+docker run -d --name camunda-run-ee-7.17.2 -p 8082:8080 \
+           registry.camunda.cloud/cambpm-ee/camunda-bpm-platform-ee:run-7.17.2
+

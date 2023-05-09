@@ -1,0 +1,129 @@
+Reference:
+https://docs.camunda.io/docs/self-managed/backup-restore/backup-and-restore/
+
+
+To create backups:
+
+1. Add configure to the elasticsearch section of the values.yaml:
+
+  # Configuration for backups
+  extraEnvs:
+    - name: "xpack.security.enabled"
+      value: "false"
+    - name: "path.repo"
+      value: "/usr/share/elasticsearch/c8-backups"
+  extraVolumes:
+    - name: c8-backups
+      persistentVolumeClaim:
+        claimName: c8-backups
+  extraVolumeMounts:
+    - name: c8-backups
+      mountPath: /usr/share/elasticsearch/c8-backups
+
+
+2. Add configure to the operate, optimize, and tasklist sections of the values.yaml :
+
+  # Configuration for backup
+  env:
+    - name: CAMUNDA_OPERATE_BACKUP_REPOSITORY_NAME
+      value: c8-backups
+      
+  # Configuration for backup
+  env:
+    - name: CAMUNDA_OPTIMIZE_BACKUP_REPOSITORY_NAME
+      value: c8-backups
+      
+  # Configuration for backup
+  env:
+    - name: CAMUNDA_TASKLIST_BACKUP_REPOSITORY_NAME
+      value: c8-backups
+
+
+3. Define the PVC for backups in a file named c8-backups.yaml:
+ 
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: c8-backups
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+
+
+4. Create the PVC from the file (this step has to be completed after minikube is running, see step 2 of XXX):
+kubectl create -f c8-backups.yaml
+
+
+5. Continue with installing the helm deployment according to XXX, but use the new values.yaml.
+
+
+6. Get the name of all pods:
+kubectl get pods
+
+
+7. Open the Elasticsearch CLI, create the snapshot repository, and exit the Elasticsearch CLI:
+
+kubectl exec --stdin --tty <dev-elasticsearch-pod-name-here> -- /bin/bash
+
+curl -X PUT 'localhost:9200/_snapshot/c8-backups?pretty' \
+ -H 'content-type: application/json' -d \
+'{
+  "type": "fs",
+  "settings": {
+    "location": "/usr/share/elasticsearch/c8-backups"
+  }
+}'
+
+exit
+
+
+8. Open the Optimize CLI, create the backup, monitor the status, then exit when completed:
+
+kubectl exec --stdin --tty <dev-optimize-pod-name-here> -- /bin/bash
+
+curl --request POST 'http://localhost:8092/actuator/backup' \
+-H 'content-type: application/json' \
+-d '{ "backupId": "backup1" }'
+
+curl --request GET 'http://localhost:8092/actuator/backup/backup1'
+
+exit
+
+
+9. Be sure to save the output file names in the backup set, these names are required to restore.
+
+
+9. Open the Operate CLI, create the backup, monitor the status, then exit when completed:
+
+kubectl exec --stdin --tty <dev-operate-pod-name-here> -- /bin/bash
+
+curl --request POST 'http://localhost:8080/actuator/backup' \
+-H 'content-type: application/json' \
+-d '{ "backupId": "backup1" }'
+
+curl --request GET 'http://localhost:8080/actuator/backup/backup1'
+
+exit
+
+
+9. Save the output file names in the backup set, these names are required to restore.
+
+
+10. Open the Tasklist CLI, create the backup, monitor the status, then exit when completed:
+
+kubectl exec --stdin --tty <dev-tasklist-pod-name-here> -- /bin/bash
+
+curl --request POST 'http://localhost:8080/actuator/backup' \
+-H 'content-type: application/json' \
+-d '{ "backupId": "backup1" }'
+
+exit
+
+
+9. Save the output file names in the backup set, these names are required to restore.
+
+
+

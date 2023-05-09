@@ -1,0 +1,57 @@
+Secure elasticsearch cluster - https://www.elastic.co/guide/en/elasticsearch/reference/current/security-basic-setup.html:
+
+### In terminal #1:
+
+docker exec -it elasticsearch /bin/bash
+su - elasticsearch
+./bin/elasticsearch-certutil ca
+
+### Answers: ###
+################
+<ENTER>
+Camunda1
+################
+
+./bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12
+
+### Answers: ###
+################
+Camunda1
+<ENTER>
+Camunda1
+################
+
+mv elastic-certificates.p12 config
+
+
+
+### In terminal #2:
+
+docker cp elasticsearch:/usr/share/elasticsearch/config/elasticsearch.yml /home/administrator/temp/elasticsearch.yml
+
+### Edit /home/administrator/temp/elasticsearch.yml, e.g.:
+
+######################################################################
+cluster.name: "docker-cluster"
+network.host: 0.0.0.0
+node.name: elasticsearch
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate 
+xpack.security.transport.ssl.client_authentication: required
+xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
+######################################################################
+
+docker cp /home/administrator/temp/elasticsearch.yml elasticsearch:/usr/share/elasticsearch/config/elasticsearch.yml 
+
+
+
+### In terminal #1:
+
+./bin/elasticsearch-keystore add xpack.security.transport.ssl.keystore.secure_password
+./bin/elasticsearch-keystore add xpack.security.transport.ssl.truststore.secure_password
+exit
+exit
+
+docker stop elasticsearch
+docker start elasticsearch

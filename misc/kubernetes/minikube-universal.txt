@@ -1,0 +1,46 @@
+Reference - https://minikube.sigs.k8s.io/docs/start/
+
+# Set up minikube:
+minikube delete --all
+minikube start --driver=docker --memory=14.5G --cpus max --nodes 1
+minikube addons enable ingress
+minikube addons enable dashboard
+
+minikube addons enable helm-tiller
+
+# Add alias to .bashrc:
+alias kubectl="minikube kubectl --"
+
+
+# Start
+minikube start
+
+# Get the status
+kubectl get po -A
+
+# Get list of all services (enabled and disabled)
+minikube addons list
+
+# Enable service
+minikube addons enable [service]
+
+# Disable service
+minikube addons disable [service]
+
+# Run the kubernetes dashboard
+minikube dashboard &
+
+# Run the minikube tunnel for ingress:
+minikube tunnel
+
+# Stop
+minikube stop
+
+
+# Node commands:
+minikube node add
+minikube node list
+minikube node delete <name>
+
+
+

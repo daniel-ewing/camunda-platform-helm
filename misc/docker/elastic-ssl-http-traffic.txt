@@ -1,0 +1,65 @@
+Secure elasticsearch http - https://www.elastic.co/guide/en/elasticsearch/reference/current/security-basic-setup-https.html#security-basic-setup-https:
+
+### In terminal #1:
+
+docker exec -it elasticsearch /bin/bash
+su - elasticsearch
+./bin/elasticsearch-certutil http
+
+### Answers: ###
+##############################################
+n
+y
+/usr/share/elasticsearch/elastic-stack-ca.p12
+Camunda1
+20y
+n
+elasticsearch
+<ENTER>
+y
+<ENTER>
+y
+n
+Camunda1
+Camunda1
+<ENTER>
+##############################################
+
+
+
+### In terminal #2:
+
+docker cp elasticsearch:/usr/share/elasticsearch/elasticsearch-ssl-http.zip /home/administrator/temp/elasticsearch-ssl-http.zip
+
+EXTRACT elasticsearch-ssl-http.zip
+
+docker cp /home/administrator/temp/elasticsearch-ssl-http/elasticsearch/http.p12 elasticsearch:/usr/share/elasticsearch/config/http.p12 
+
+docker cp elasticsearch:/usr/share/elasticsearch/config/elasticsearch.yml /home/administrator/temp/elasticsearch.yml
+
+### Edit /home/administrator/temp/elasticsearch.yml, e.g.:
+
+######################################################################
+cluster.name: "docker-cluster"
+network.host: 0.0.0.0
+node.name: elasticsearch
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate 
+xpack.security.transport.ssl.client_authentication: required
+xpack.security.transport.ssl.keystore.path: elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: elastic-certificates.p12
+xpack.security.http.ssl.enabled: true
+xpack.security.http.ssl.keystore.path: http.p12
+######################################################################
+
+docker cp /home/administrator/temp/elasticsearch.yml elasticsearch:/usr/share/elasticsearch/config/elasticsearch.yml 
+
+
+
+### In terminal #1:
+
+./bin/elasticsearch-keystore add xpack.security.http.ssl.keystore.secure_password
+
+docker stop elasticsearch
+docker start elasticsearch
+

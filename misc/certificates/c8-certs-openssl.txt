@@ -1,0 +1,57 @@
+## openssl > 3.0
+## COMBINED INGRESS
+
+openssl req -newkey rsa:4096 \
+            -x509 \
+            -sha256 \
+            -days 9999 \
+            -noenc \
+            -addext "subjectAltName = DNS:c8.dev.local,DNS:zeebe.c8.dev.local,IP:127.0.0.1,IP:192.168.49.2" \
+            -out dev.c8.combined.crt \
+            -keyout dev.c8.combined.key \
+            -subj "/CN=c8.dev.local"
+
+
+## openssl > 3.0
+## SEPARATE INGRESS
+
+openssl req -newkey rsa:4096 \
+            -x509 \
+            -sha256 \
+            -days 9999 \
+            -noenc \
+            -addext "subjectAltName = DNS:connectors.c8.dev.local,DNS:identity.c8.dev.local,DNS:keycloak.c8.dev.local,DNS:modeler.c8.dev.local,DNS:operate.c8.dev.local,DNS:optimize.c8.dev.local,DNS:tasklist.c8.dev.local,DNS:websockets.c8.dev.local,DNS:zeebe.c8.dev.local,IP:127.0.0.1,IP:192.168.49.2" \
+            -out dev.c8.separated.crt \
+            -keyout dev.c8.separated.key \
+            -subj "/CN=c8.dev.local"
+
+
+
+
+## openssl < 3.0
+## COMBINED INGRESS
+
+openssl req -newkey rsa:4096 \
+            -x509 \
+            -sha256 \
+            -days 9999 \
+            -nodes \
+            -addext "subjectAltName = DNS:c8.dev.local,DNS:zeebe.c8.dev.local,IP:127.0.0.1,IP:192.168.49.2" \
+            -out dev.c8.combined.crt \
+            -keyout dev.c8.combined.key \
+            -subj "/CN=c8.dev.local"
+
+
+## openssl < 3.0
+## SEPARATE INGRESS
+
+openssl req -newkey rsa:4096 \
+            -x509 \
+            -sha256 \
+            -days 9999 \
+            -nodes \
+            -addext "subjectAltName = DNS:connectors.c8.dev.local,DNS:identity.c8.dev.local,DNS:keycloak.c8.dev.local,DNS:modeler.c8.dev.local,DNS:operate.c8.dev.local,DNS:optimize.c8.dev.local,DNS:tasklist.c8.dev.local,DNS:websockets.c8.dev.local,DNS:zeebe.c8.dev.local,IP:127.0.0.1,IP:192.168.49.2" \
+            -out dev.c8.separated.crt \
+            -keyout dev.c8.separated.key \
+            -subj "/CN=c8.dev.local"
+

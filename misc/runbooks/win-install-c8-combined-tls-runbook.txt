@@ -1,0 +1,53 @@
+minikube delete --all
+minikube start --driver=docker --memory=24G --cpus max --nodes 1
+minikube addons enable ingress
+minikube addons enable dashboard
+minikube dashboard &
+
+# Open new terminal
+
+minikube tunnel
+
+# Open new terminal
+
+cd /mnt/c/camunda/camunda-platform-8/certificates
+openssl req -newkey rsa:4096 \
+            -x509 \
+            -sha256 \
+            -days 9999 \
+            -nodes \
+            -addext "subjectAltName = DNS:c8.dev.local,DNS:zeebe.c8.dev.local" \
+            -out dev.c8.combined.crt \
+            -keyout dev.c8.combined.key \
+
+
+kubectl create secret generic dev-c8-combined \
+                        --from-file=tls.crt=/mnt/c/camunda/camunda-platform-8/certificates/dev.c8.combined.crt \
+                        --from-file=tls.key=/mnt/c/camunda/camunda-platform-8/certificates/dev.c8.combined.key
+
+kubectl create secret docker-registry dev-c8-registry \
+                                --docker-server=a.server \
+                                --docker-username=first.last \
+                                --docker-password='pw' \
+                                --docker-email=first.last@domain.com
+
+helm install dev camunda/camunda-platform \
+    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.1.x/combined-ingress-tls-values.yaml \
+	--version 8.1.7
+
+helm install dev camunda/camunda-platform \
+    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x/combined-ingress-tls-modeler-values.yaml
+
+
+helm install dev camunda/camunda-platform \
+    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x/combined-ingress-tls-modeler-values.yaml \
+	-f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x/context-path-fix-8.2.0-only.yaml \
+	--version 8.2.0
+
+helm install dev camunda/camunda-platform \
+    -f /mnt/c/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x/combined-ingress-tls-modeler-values.yaml \
+	--version 8.2.1
+
+hdd
+kdpvcd
+

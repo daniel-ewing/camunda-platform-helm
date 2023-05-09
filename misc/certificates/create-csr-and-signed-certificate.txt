@@ -1,0 +1,134 @@
+ssl using cfssl
+
+From https://github.com/cloudflare/cfssl/releases download a cfssl and cfssljson asset for your architecture (this example is for Linux), e.g.:
+- cfssl_1.6.3_linux_amd64 
+- cfssljson_1.6.3_linux_amd64
+
+
+Make them easily executable and give them shortend names:
+
+chmod +x cfssl_1.6.3_linux_amd64 cfssljson_1.6.3_linux_amd64
+sudo mv cfssl_1.6.3_linux_amd64 /usr/local/bin/cfssl
+sudo mv cfssljson_1.6.3_linux_amd64 /usr/local/bin/cfssljson
+
+
+Create a Certificate Signing Request
+
+
+cat <<EOF | cfssl genkey - | cfssljson -bare separate.c8.dev.local
+{
+  "hosts": [
+    "c8.dev.local",
+    "identity.c8.dev.local",
+    "keycloak.c8.dev.local",
+    "operate.c8.dev.local",
+    "optimize.c8.dev.local",
+    "tasklist.c8.dev.local",
+    "web-sockets.c8.dev.local",
+    "web-modeler.c8.dev.local",
+    "zeebe.c8.dev.local"
+  ],
+  "CN": "c8.dev.local",
+  "key": {
+    "algo": "rsa",
+    "size": 4096
+  }
+}
+EOF
+
+
+Create a base64 Certificate Signing Request (CSR) object from the separate.c8.dev.local.csr file and send it to the Kubernetes API
+
+cat <<EOF | kubectl apply -f -
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: c8.dev.local
+spec:
+  request: $(cat separate.c8.dev.local.csr | base64 | tr -d '\n')
+  signerName: example.com/serving
+  expirationSeconds: 300000000
+  usages:
+  - digital signature
+  - key encipherment
+  - server auth
+EOF
+
+
+Approve the CSR
+
+kubectl certificate approve c8.dev.local
+
+
+Create a signing certificate
+
+cat <<EOF | cfssl gencert -initca - | cfssljson -bare c8.ca
+{
+  "CN": "C8 Signer",
+  "key": {
+    "algo": "rsa",
+    "size": 4096
+  }
+}
+EOF
+
+
+Create a file named 'server-signing-config.json' with these contents:
+
+{
+    "signing": {
+        "default": {
+            "usages": [
+                "digital signature",
+                "key encipherment",
+                "server auth"
+            ],
+            "expiry": "84000h",
+            "ca_constraint": {
+                "is_ca": false
+            }
+        }
+    }
+}
+
+
+Sign the CSR:
+
+kubectl get csr c8.dev.local -o jsonpath='{.spec.request}' | \
+  base64 --decode | \
+  cfssl sign -ca c8.ca.pem -ca-key c8.ca-key.pem -config server-signing-config.json - | \
+  cfssljson -bare c8.ca-signed-server
+  
+
+Upload the signed certificate (relies on having the 'jq' utility installed):
+
+kubectl get csr c8.dev.local -o json | \
+  jq '.status.certificate = "'$(base64 c8.ca-signed-server.pem | tr -d '\n')'"' | \
+  kubectl replace --raw /apis/certificates.k8s.io/v1/certificatesigningrequests/c8.dev.local/status -f -
+
+
+
+Check the CSR, the CONDITION should be 'Approved,Issued'
+
+kubectl get csr
+
+
+
+Download the Certificate and Use It
+
+kubectl get csr c8.dev.local -o jsonpath='{.status.certificate}' | base64 --decode > separate.c8.dev.local.crt
+
+
+
+Commands to describe the CSR or get details
+
+kubectl describe csr c8.dev.local
+
+kubectl get csr c8.dev.local -o yaml
+
+
+Delete the CSR if there is a problem
+
+kubectl delete csr c8.dev.local
+
+ 

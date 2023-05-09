@@ -1,0 +1,60 @@
+# List all containers
+docker ps -a
+
+
+# Remove a container
+docker container rm -f -v <id | name>
+
+
+# List all images
+docker image ls
+
+
+# Remove an image
+docker image rm -f <id | repository>
+
+
+# Find the location of a container log:
+docker inspect --format='{{.LogPath}}' <id | name>
+
+
+# Copy a container log to a file in an easily readable format:
+docker logs <id | name> >& logs/myFile.log
+
+
+# Write all container logs from docker-compose to a common file:
+cd /<docker-compose-file-directory>
+docker-compose logs >& myFile.log
+
+
+# Start a stopped container:
+docker start <id | name>
+
+
+# Open the bash CLI of a running container:
+docker exec -it <id | name> /bin/bash
+
+
+# Copy a file to a running container:
+docker cp "local-path-and-file-name" <id | name>:"remote-path"
+
+
+# Copy a file from a running container:
+docker cp <id | name>:"remote-path" "local-path-and-file-name"
+
+
+# Stop a running container:
+docker stop <id | name>
+
+
+# Get file system of stopped container:
+docker export -o dump.tar <id | name>
+tar -tvf dump.tar
+
+
+# Build a dockerfile:
+docker build . -t <image>:<tag>
+
+# Remove all unused containers, networks, images (both dangling and unreferenced), and optionally, volumes
+docker system prune --all --volumes
+

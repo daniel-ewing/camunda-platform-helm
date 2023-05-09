@@ -1,0 +1,21 @@
+
+# Official PG 13:
+
+
+docker run -d --name postgres-13 -p 5432:5432 \
+           -e POSTGRES_USER=postgres \
+           -e POSTGRES_PASSWORD=Camunda1 \
+           postgres:13-alpine
+
+
+# PG 13 with Camunda tablespace directory:
+
+
+docker run -d --name postgres-13 -p 5432:5432 \
+           -e POSTGRES_USER=postgres \
+           -e POSTGRES_PASSWORD=Camunda1 \
+           postgres-13-camunda:1.0
+
+
+           
+

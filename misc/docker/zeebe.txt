@@ -1,0 +1,52 @@
+
+# Cloud 8 Core:
+
+# Start
+cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform
+docker-compose -f docker-compose-core.yaml up -d
+
+# Get container logs:
+docker logs zeebe >& /home/administrator/temp/zeebe.log && \
+docker logs operate >& /home/administrator/temp/operate.log
+
+# Stop
+docker-compose -f docker-compose-core.yaml stop
+
+# Stop and remove persistent volumes:
+cd /home/administrator/software/camunda/zeebe/camunda-platform
+docker-compose -f docker-compose-core.yaml down -v
+
+
+
+# Cloud 8 Full:
+
+# Start
+cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform
+docker-compose up -d
+
+# Get container logs:
+docker logs connectors >& /home/administrator/temp/connectors.log && \
+docker logs optimize >& /home/administrator/temp/optimize.log && \
+docker logs tasklist >& /home/administrator/temp/tasklist.log && \
+docker logs operate >& /home/administrator/temp/operate.log && \
+docker logs identity >& /home/administrator/temp/identity.log && \
+docker logs zeebe >& /home/administrator/temp/zeebe.log && \
+docker logs keycloak >& /home/administrator/temp/keycloak.log && \
+docker logs elasticsearch >& /home/administrator/temp/elasticsearch.log && \
+docker logs postgres >& /home/administrator/temp/postgres.log 
+
+# Stop
+docker-compose stop
+
+# Stop and remove persistent volumes:
+docker-compose down -v
+
+
+# Deploy BPMN:
+????????????????
+bin/zbctl --insecure /mnt/c/JIRA/11079/test_var.bpmn
+
+# Create instance:
+bin/zbctl --insecure create instance [instance-key]
+
+

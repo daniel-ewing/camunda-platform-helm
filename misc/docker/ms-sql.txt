@@ -1,0 +1,30 @@
+
+MS SQL Server 2017 Developer Edition:
+
+
+docker run -d --name ms-sql-2017 -p 1417:1433 \
+           -h ms-sql-2017 \
+           -e "ACCEPT_EULA=Y" \
+           -e "SA_PASSWORD=Camunda1" \
+           mcr.microsoft.com/mssql/server:2017-latest
+
+
+// Add some RAM:
+docker run -d --name ms-sql-2017 -p 1417:1433 \
+           -h ms-sql-2017 \
+           -e "ACCEPT_EULA=Y" \
+           -e "SA_PASSWORD=Camunda1" \
+           -m 4g
+           mcr.microsoft.com/mssql/server:2017-latest
+
+
+MS SQL Server 2019 Developer Edition:
+
+
+docker run -d --name ms-sql-2019 -p 1419:1433 \
+           -h win-sql-2019 \
+           -e "ACCEPT_EULA=Y" \
+           -e "SA_PASSWORD=Camunda1" \
+           mcr.microsoft.com/mssql/server:2019-latest
+
+

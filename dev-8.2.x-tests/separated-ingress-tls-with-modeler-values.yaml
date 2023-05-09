@@ -115,28 +115,28 @@ webModeler:
       - name: LOGGING_LEVEL_IO_GRPC
         value: TRACE
       - name: ZEEBE_CA_CERTIFICATE_PATH
-        value: "/home/runner/dev.c8.separate.crt"
+        value: "/home/runner/dev.c8.separated.crt"
     extraVolumes:
       - name: dev-c8-separated
         secret:
           secretName: dev-c8-separated
     extraVolumeMounts:
       - name: dev-c8-separated
-        mountPath: "/home/runner/dev.c8.separate.crt"
+        mountPath: "/home/runner/dev.c8.separated.crt"
         subPath: tls.crt
   webapp:
     env:
 #      - name: ZEEBE_SECURE_CONNECTION
 #        value: "true"
       - name: ZEEBE_CLIENT_SSL_ROOT_CERTS_PATH
-        value: "/home/node/dev.c8.separate.crt"
+        value: "/home/node/dev.c8.separated.crt"
     extraVolumes:
       - name: dev-c8-separated
         secret:
           secretName: dev-c8-separated
     extraVolumeMounts:
       - name: dev-c8-separated
-        mountPath: "/home/node/dev.c8.separate.crt"
+        mountPath: "/home/node/dev.c8.separated.crt"
         subPath: tls.crt
   ingress:
     enabled: true
@@ -161,11 +161,11 @@ postgresql:
 connectors:
   resources:
     requests:
-      cpu: 500m
-      memory: 500Mi
+      cpu: 250m
+      memory: 256Mi
     limits:
-      cpu: 1000m
-      memory: 1Gi
+      cpu: 500m
+      memory: 768Mi
   ingress:
     enabled: true
     host: "connectors.c8.dev.local"

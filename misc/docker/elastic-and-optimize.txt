@@ -1,0 +1,61 @@
+
+ElasticcSearch - https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html:
+
+
+docker run -d --name elastic-search-6.8.0 -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.8.0
+
+docker run -d --name elastic-search-7.4.0 -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.4.0
+
+docker run -d --name elastic-search-7.6.0 -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+
+docker run -d --name elastic-search-7.6.2 -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+
+docker run -d --name elastic-search-7.8.0 -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.8.0
+
+docker run -d --name elastic-search-7.10.0 -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+
+docker run -d --name elastic-search-7.15.0 -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+
+
+Camunda Optimize - https://docs.camunda.org/optimize/latest/technical-guide/setup/installation/:
+
+
+docker login registry.camunda.cloud
+
+
+docker run -d --name optimize-2.5.0 -p 8090:8090 \
+           -e OPTIMIZE_CAMUNDABPM_REST_URL=http://192.168.253.144:8080/engine-rest \
+           -e OPTIMIZE_CAMUNDABPM_WEBAPPS_URL=http://192.168.253.144:8080/camunda \
+           -e OPTIMIZE_ELASTICSEARCH_HOST=192.168.253.144 \
+           -e OPTIMIZE_ELASTICSEARCH_HTTP_PORT=9200 \
+           -v /home/administrator/.camunda/license.txt:/optimize/config/OptimizeLicense.txt:ro \
+           registry.camunda.cloud/optimize-ee/optimize:2.5.0
+
+
+docker run -d --name optimize-3.3.0 -p 8090:8090 \
+           -e OPTIMIZE_CAMUNDABPM_REST_URL=http://192.168.253.144:8080/engine-rest \
+           -e OPTIMIZE_CAMUNDABPM_WEBAPPS_URL=http://192.168.253.144:8080/camunda \
+           -e OPTIMIZE_ELASTICSEARCH_HOST=192.168.253.144 \
+           -e OPTIMIZE_ELASTICSEARCH_HTTP_PORT=9200 \
+           -v /home/administrator/.camunda/license.txt:/optimize/config/OptimizeLicense.txt:ro \
+           registry.camunda.cloud/optimize-ee/optimize:3.3.0
+
+
+docker run -d --name optimize-3.4.0 -p 8090:8090 \
+           -e OPTIMIZE_CAMUNDABPM_REST_URL=http://192.168.253.144:8080/engine-rest \
+           -e OPTIMIZE_CAMUNDABPM_WEBAPPS_URL=http://192.168.253.144:8080/camunda \
+           -e OPTIMIZE_ELASTICSEARCH_HOST=192.168.253.144 \
+           -e OPTIMIZE_ELASTICSEARCH_HTTP_PORT=9200 \
+           -v /home/administrator/.camunda/license.txt:/optimize/config/OptimizeLicense.txt:ro \
+           registry.camunda.cloud/optimize-ee/optimize:3.4.0
+
+
+docker run -d --name optimize-3.6.0 -p 8090:8090 \
+           -e OPTIMIZE_CAMUNDABPM_REST_URL=http://192.168.253.144:8080/engine-rest \
+           -e OPTIMIZE_CAMUNDABPM_WEBAPPS_URL=http://192.168.253.144:8080/camunda \
+           -e OPTIMIZE_ELASTICSEARCH_HOST=192.168.253.144 \
+           -e OPTIMIZE_ELASTICSEARCH_HTTP_PORT=9200 \
+           -v /home/administrator/.camunda/license.txt:/optimize/config/OptimizeLicense.txt:ro \
+           registry.camunda.cloud/optimize-ee/optimize:3.6.0
+
+

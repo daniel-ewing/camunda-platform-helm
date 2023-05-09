@@ -1,0 +1,100 @@
+Reference - https://docs.camunda.io/docs/self-managed/platform-deployment/helm-kubernetes/guides/local-kubernetes-cluster/
+
+# Get the helm repo:
+helm repo add camunda https://helm.camunda.io
+helm repo update
+
+
+# Install the dev deployment using the appropriate values.yaml:
+helm install dev camunda/camunda-platform \
+    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/core-values.yaml
+
+helm install dev camunda/camunda-platform \
+    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/combined-ingress-values.yaml
+
+helm install dev camunda/camunda-platform \
+    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/combined-ingress-tls-values.yaml
+
+helm install dev camunda/camunda-platform \
+    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/separate-ingress-tls-values.yaml
+
+helm install dev camunda/camunda-platform \
+    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/separate-ingress-tls-modeler-values.yaml
+
+helm install dev camunda/camunda-platform \
+    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/separate-ingress-tls-backup-values.yaml
+
+helm install dev camunda/camunda-platform \
+    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/separate-ingress-tls-modeler-prometheus-values.yaml
+
+helm install dev camunda/camunda-platform \
+    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.1.x/separated-ingress-tls-keycloak-secrets-values.yaml \
+    --version 8.1.7
+
+
+# Run the minikube tunnel for ingress:
+minikube tunnel
+
+# Get the automatically generated Keycloak password:
+kubectl get secret "dev-keycloak" -o jsonpath="{.data.admin-password}"| base64 --decode; echo
+
+# Get status:
+kubectl get pods
+
+# Check on messages from the scheduler:
+kubectl describe pods <pod_name>
+
+# tail the logs of a pod:
+kubectl logs -f <pod_name>
+
+# Get the CLI of a pod:
+kubectl exec --stdin --tty <pod_name> -- /bin/bash
+
+# Forward host ports:
+kubectl port-forward svc/dev-zeebe-gateway 26500:26500 -n default &
+kubectl port-forward svc/dev-identity 8080:80 &
+kubectl port-forward svc/dev-operate 8081:80 &
+kubectl port-forward svc/dev-tasklist 8082:80 &
+kubectl port-forward svc/dev-optimize 8083:80 &
+kubectl port-forward svc/dev-keycloak 18080:80 &
+
+    
+# Get a list of helm deployments:
+helm list
+
+# Reload the values.yaml:
+helm upgrade dev camunda/camunda-platform \
+    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/core-values.yaml
+
+helm upgrade dev camunda/camunda-platform \
+    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/combined-ingress-values.yaml
+
+helm upgrade dev camunda/camunda-platform \
+    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/combined-ingress-tls-values.yaml
+
+helm upgrade dev camunda/camunda-platform \
+    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/separate-ingress-tls-values.yaml
+
+helm upgrade dev camunda/camunda-platform \
+    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/separate-ingress-tls-modeler-values.yaml
+
+helm upgrade dev camunda/camunda-platform \
+    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/separate-ingress-tls-backup-values.yaml
+
+
+
+# Before you delete all remaining PVCs, you can check with dry-run first:
+kubectl delete persistentvolumeclaim --all --dry-run=client
+
+# Delete the dev helm deployment and all remaining PVCs in the default namespace:
+helm delete dev
+kubectl delete persistentvolumeclaim --all
+
+# Delete specific PVCs:
+kubectl delete persistentvolumeclaim data-dev-postgresql-0
+kubectl delete persistentvolumeclaim data-dev-postgresql-web-modeler-0
+kubectl delete persistentvolumeclaim data-dev-zeebe-0
+kubectl delete persistentvolumeclaim elasticsearch-master-elasticsearch-master-0
+
+
+

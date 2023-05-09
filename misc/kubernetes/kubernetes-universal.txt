@@ -1,0 +1,83 @@
+# Get all running kubernetes service information
+kubectl get all --all-namespaces
+
+# Get status:
+kubectl get pods
+
+kubectl logs pod
+
+# Get the CLI of a pod:
+kubectl exec --stdin --tty <pod_name> -- /bin/bash
+
+# Get the env vars of a pod:
+kubectl exec <pod_name> -- printenv
+
+# Create a PVC:
+kubectl create -f pcv.yaml
+
+# Get the complete values.yaml for a specific version of a helm chart:
+helm show values camunda/camunda-platform --version 8.1.7 >~/temp/values-8.1.7.yaml
+
+
+# Secret management:
+kubectl create secret generic dev-c8-separated \
+                              --from-file=tls.crt=/home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separate.crt \
+                              --from-file=tls.key=/home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separate.key
+
+
+kubectl create secret generic dev-c8-combined \
+                              --from-file=tls.crt=/software/camunda/camunda-platform-8/certificates/dev.c8.combined.crt \
+                              --from-file=tls.key=/software/camunda/camunda-platform-8/certificates/dev.c8.combined.key
+
+
+kubectl create secret docker-registry dev-c8-registry \
+                                      --docker-server=registry.camunda.cloud \
+                                      --docker-username=daniel.ewing \
+                                      --docker-password='' \
+                                      --docker-email=daniel.ewing@camunda.com
+
+
+kubectl create secret generic dev-identity-secrets \
+                              --from-literal=operate-secret=SetThisToMakeUpgradeEasy \
+                              --from-literal=tasklist-secret=SetThisToMakeUpgradeEasy \
+                              --from-literal=optimize-secret=SetThisToMakeUpgradeEasy \
+                              --from-literal=connectors-secret=SetThisToMakeUpgradeEasy
+
+
+kubectl create secret generic dev-identity-keycloak-secrets \
+                              --from-literal=admin-password=SetThisToMakeLoginEasy \
+                              --from-literal=management-password=SetThisToMakeLoginEasy \
+
+
+kubectl create secret generic dev-identity-keycloak-postgresql-secrets \
+                              --from-literal=password=SetThisToMakeLoginEasy \
+                              --from-literal=postgres-password=SetThisToMakeLoginEasy
+
+
+kubectl create secret generic dev-modeler-postgresql-secrets \
+                              --from-literal=password=SetThisToMakeLoginEasy \
+                              --from-literal=postgres-password=SetThisToMakeLoginEasy
+
+
+
+kubectl create secret generic dev-connectors-identity-secret \
+                              --from-literal=connectors-secret=SetThisToMakeUpgradeEasy
+
+
+kubectl create secret generic dev-postgresql-web-modeler \
+                              --from-literal=password=SetThisToMakeLoginEasy \
+                              --from-literal=postgres-password=SetThisToMakeLoginEasy
+
+
+kubectl delete secret dev-c8-separated
+kubectl delete secret dev-c8-registry
+kubectl delete secret dev-identity-secrets
+kubectl delete secret dev-identity-keycloak-secrets
+kubectl delete secret dev-identity-keycloak-postgresql-secrets
+kubectl delete secret dev-modeler-postgresql-secrets
+kubectl delete secret dev-connectors-identity-secret
+kubectl delete secret dev-postgresql-web-modeler
+
+
+
+
