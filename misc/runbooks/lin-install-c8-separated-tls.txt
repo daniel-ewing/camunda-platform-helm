@@ -28,11 +28,15 @@ kubectl create secret docker-registry dev-c8-registry \
                                       --docker-email=first.last@domain.com
 
 helm install dev camunda/camunda-platform \
-                 -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/separated-ingress-tls-with-modeler-values.yaml
+                 -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.1.x-tests/separated-ingress-tls-values.yaml \
+                 --version 8.1.6
+
+helm install dev camunda/camunda-platform \
+                 -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/separated-ingress-tls-with-modeler-values.yaml \
                  --version 8.2.2
 
 helm install dev camunda/camunda-platform \
-                 -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/separated-ingress-tls-secrets-no-connectors-values.yaml
+                 -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/separated-ingress-tls-secrets-no-connectors-values.yaml \
                  --version 8.2.2
 
 helm upgrade dev camunda/camunda-platform \

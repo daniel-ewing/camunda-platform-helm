@@ -2,7 +2,7 @@
 # Note: you can change the global.image.tag version value as needed.
 global:
   image:
-    tag: 8.2.3
+    tag: latest
 
   identity:
     auth:
@@ -90,7 +90,7 @@ identity:
 webModeler:
   enabled: true
   image:
-    tag: 8.2.1
+    tag: 8.2.2
     pullSecrets:
       - name: dev-c8-registry
   restapi:

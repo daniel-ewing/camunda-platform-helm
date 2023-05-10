@@ -2,7 +2,7 @@
 # You can change the global.image.tag version value as needed, just don't delete comment that follows it.
 global:
   image:
-    tag: 8.1.5
+    tag: latest
 
   identity:
     auth:
@@ -31,25 +31,25 @@ zeebe-gateway:
     host: "zeebe.c8.dev.local"
     tls:
       enabled: true
-      secretName: "dev-c8-separatedd-tls"
+      secretName: "dev-c8-separated-tls"
 
 operate:
   ingress:
     enabled: true
     host: "operate.c8.dev.local"
-    secretName: "dev-c8-separatedd-tls"
+    secretName: "dev-c8-separated-tls"
 
 tasklist:
   ingress:
     enabled: true
     host: "tasklist.c8.dev.local"
-    secretName: "dev-c8-separatedd-tls"
+    secretName: "dev-c8-separated-tls"
 
 optimize:
   ingress:
     enabled: true
     host: "optimize.c8.dev.local"
-    secretName: "dev-c8-separatedd-tls"
+    secretName: "dev-c8-separated-tls"
 
 identity:
   fullURL: "https://identity.c8.dev.local"
@@ -62,7 +62,7 @@ identity:
       hostname: "keycloak.c8.dev.local"
       tls:
         enabled: true
-        secretName: "dev-c8-separatedd-tls"
+        secretName: "dev-c8-separated-tls"
     auth:
       adminPassword: SetThisToMakeLoginEasy
       managementPassword: SetThisToMakeLoginEasy
@@ -74,7 +74,7 @@ identity:
     host: "identity.c8.dev.local"
     tls:
       enabled: true
-      secretName: "dev-c8-separatedd-tls"
+      secretName: "dev-c8-separated-tls"
 
 # Reduce Elasticsearch replicas and resources to make it run locally
 elasticsearch:
