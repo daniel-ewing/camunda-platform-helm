@@ -67,12 +67,12 @@ tasklist:
 optimize:
   contextPath: "/optimize"
   # Reduce resources for local testing.
-    requests:
-      cpu: 500m
-      memory: 384Mi
-    limits:
-      cpu: 1500m
-      memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 384Mi
+  limits:
+    cpu: 1500m
+    memory: 1Gi
 
 identity:
   fullURL: "https://c8.dev.local/identity"
