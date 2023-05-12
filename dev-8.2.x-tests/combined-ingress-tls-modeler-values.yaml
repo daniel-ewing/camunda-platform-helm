@@ -124,8 +124,9 @@ webModeler:
       # Restapi.mail.fromName defines the name that will be displayed as the sender of emails sent by Web Modeler
       fromName: "Camunda Platform"
     env:
-#      - name: ZEEBE_INSECURE_CONNECTION
-#        value: "false"
+##      Configuration for DEBUG logging:
+#      - name: LOGGING_LEVEL_IO_GRPC
+#        value: TRACE
       - name: ZEEBE_CA_CERTIFICATE_PATH
         value: "/home/node/dev.c8.combined.crt"
     extraVolumes:
@@ -146,8 +147,6 @@ webModeler:
         memory: 1536Mi
   webapp:
     env:
-#      - name: ZEEBE_SECURE_CONNECTION
-#        value: "true"
       - name: ZEEBE_CLIENT_SSL_ROOT_CERTS_PATH
         value: "/home/node/dev.c8.combined.crt"
     extraVolumes:
