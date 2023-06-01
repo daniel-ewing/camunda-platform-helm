@@ -110,24 +110,21 @@ webModeler:
       # Restapi.mail.fromName defines the name that will be displayed as the sender of emails sent by Web Modeler
       fromName: "Camunda Platform"
     env:
-#      - name: ZEEBE_INSECURE_CONNECTION
-#        value: "false"
+##      Configuration for DEBUG logging:
 #      - name: LOGGING_LEVEL_IO_GRPC
 #        value: TRACE
       - name: ZEEBE_CA_CERTIFICATE_PATH
-        value: "/home/runner/dev.c8.separated.crt"
+        value: "/home/node/dev.c8.separated.crt"
     extraVolumes:
       - name: dev-c8-separated
         secret:
           secretName: dev-c8-separated
     extraVolumeMounts:
       - name: dev-c8-separated
-        mountPath: "/home/runner/dev.c8.separated.crt"
+        mountPath: "/home/node/dev.c8.separated.crt"
         subPath: tls.crt
   webapp:
     env:
-#      - name: ZEEBE_SECURE_CONNECTION
-#        value: "true"
       - name: ZEEBE_CLIENT_SSL_ROOT_CERTS_PATH
         value: "/home/node/dev.c8.separated.crt"
     extraVolumes:
@@ -159,13 +156,13 @@ postgresql:
 
 # Reduce Connectors resources for local testing
 connectors:
-#  resources:
-#    requests:
-#      cpu: 250m
-#      memory: 256Mi
-#    limits:
-#      cpu: 500m
-#      memory: 768Mi
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 768Mi
   ingress:
     enabled: true
     host: "connectors.c8.dev.local"
@@ -185,10 +182,10 @@ elasticsearch:
         storage: 8Gi
   resources:
     requests:
-      cpu: 1000m
+      cpu: 500m
       memory: 2Gi
     limits:
-      cpu: 2000m
+      cpu: 1000m
       memory: 2Gi
   minimumMasterNodes: 1
   clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
