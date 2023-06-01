@@ -112,8 +112,8 @@ webModeler:
     env:
 #      - name: ZEEBE_INSECURE_CONNECTION
 #        value: "false"
-      - name: LOGGING_LEVEL_IO_GRPC
-        value: TRACE
+#      - name: LOGGING_LEVEL_IO_GRPC
+#        value: TRACE
       - name: ZEEBE_CA_CERTIFICATE_PATH
         value: "/home/runner/dev.c8.separated.crt"
     extraVolumes:
@@ -159,13 +159,13 @@ postgresql:
 
 # Reduce Connectors resources for local testing
 connectors:
-  resources:
-    requests:
-      cpu: 250m
-      memory: 256Mi
-    limits:
-      cpu: 500m
-      memory: 768Mi
+#  resources:
+#    requests:
+#      cpu: 250m
+#      memory: 256Mi
+#    limits:
+#      cpu: 500m
+#      memory: 768Mi
   ingress:
     enabled: true
     host: "connectors.c8.dev.local"
@@ -185,10 +185,10 @@ elasticsearch:
         storage: 8Gi
   resources:
     requests:
-      cpu: 500m
+      cpu: 1000m
       memory: 2Gi
     limits:
-      cpu: 1000m
+      cpu: 2000m
       memory: 2Gi
   minimumMasterNodes: 1
   clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
