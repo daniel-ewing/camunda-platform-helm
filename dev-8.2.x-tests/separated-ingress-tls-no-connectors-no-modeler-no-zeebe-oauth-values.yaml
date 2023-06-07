@@ -2,7 +2,7 @@
 # You can change the global.image.tag version value as needed, just don't delete comment that follows it.
 global:
   image:
-    tag: 8.2.5
+    tag: latest
 
   identity:
     auth:
@@ -26,6 +26,9 @@ zeebe:
 
 zeebe-gateway:
   replicas: 1
+#  env:
+#    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
+#      value: none
   ingress:
     enabled: true
     host: "zeebe.c8.dev.local"
@@ -63,6 +66,9 @@ identity:
       tls:
         enabled: true
         secretName: "dev-c8-separated-tls"
+#    tls:
+#      enabled: true
+#      secretName: "dev-c8-separated-tls"
     auth:
       adminPassword: SetThisToMakeLoginEasy
       managementPassword: SetThisToMakeLoginEasy
@@ -77,9 +83,18 @@ identity:
       enabled: true
       secretName: "dev-c8-separated-tls"
 
+webModeler:
+  enabled: false
+
+postgresql:
+  enabled: false
+
+connectors:
+  enabled: false
+
 # Reduce Elasticsearch replicas and resources to make it run locally
 elasticsearch:
-  imageTag: 7.17.3
+#  imageTag: 7.17.3  # Uncomment this line and set a value if you want to override the default chart value.
   replicas: 1
   minimumMasterNodes: 1
   # Allow no backup for single node setups
@@ -87,10 +102,10 @@ elasticsearch:
   # Allocate smaller chunks of memory per pod.
   resources:
     requests:
-      cpu: 500m
+      cpu: 1000m
       memory: 2Gi
     limits:
-      cpu: 1000m
+      cpu: 2000m
       memory: 2Gi
   # Request smaller persistent volumes.
   volumeClaimTemplate:

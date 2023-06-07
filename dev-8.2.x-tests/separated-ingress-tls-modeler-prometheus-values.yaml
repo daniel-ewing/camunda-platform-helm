@@ -2,7 +2,7 @@
 # Note: you can change the global.image.tag version value as needed.
 global:
   image:
-    tag: 8.1.9
+    tag: 8.2.5
 
   identity:
     auth:

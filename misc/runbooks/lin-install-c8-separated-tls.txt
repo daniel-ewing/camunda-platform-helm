@@ -21,11 +21,15 @@ kubectl create secret generic dev-c8-separated \
                               --from-file=tls.crt=/home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separated.crt \
                               --from-file=tls.key=/home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separated.key
 
-kubectl create secret docker-registry dev-c8-registry \
-                                      --docker-server=a.server \
-                                      --docker-username=first.last \
-                                      --docker-password='pw' \
-                                      --docker-email=first.last@domain.com
+kubectl create secret generic dev-c8-registry \
+                              --from-file=.dockerconfigjson=/home/administrator/software/commands/config-yaml/dev-c8-registry-config.json \
+                              --type=kubernetes.io/dockerconfigjson
+
+#kubectl create secret docker-registry dev-c8-registry \
+#                                      --docker-server=a.server \
+#                                      --docker-username=first.last \
+#                                      --docker-password='pw' \
+#                                      --docker-email=first.last@domain.com
 
 helm install dev camunda/camunda-platform \
                  -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.1.x-tests/separated-ingress-tls-values.yaml \
@@ -38,6 +42,10 @@ helm install dev camunda/camunda-platform \
 helm install dev camunda/camunda-platform \
                  -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/separated-ingress-tls-secrets-no-connectors-values.yaml \
                  --version 8.2.3
+
+helm install dev camunda/camunda-platform \
+                 -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/separated-ingress-tls-no-connectors-no-modeler-no-zeebe-oauth-values.yaml \
+                 --version 8.2.5
 
 helm upgrade dev camunda/camunda-platform \
                  -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/separated-ingress-tls-secrets-no-connectors-values.yaml \

@@ -2,7 +2,7 @@
 # You can change the global.image.tag version value as needed, just don't delete comment that follows it.
 global:
   image:
-    tag: 8.1.5
+    tag: 8.2.5
 
   ingress:
     enabled: true

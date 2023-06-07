@@ -2,7 +2,7 @@
 # You can change the global.image.tag version value as needed, just don't delete comment that follows it.
 global:
   image:
-    tag: 8.2.3
+    tag: 8.2.5
 
   ingress:
     enabled: true
@@ -37,6 +37,9 @@ zeebe:
 
 zeebe-gateway:
   replicas: 1
+#  env:
+#    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
+#      value: none
   ingress:
     enabled: true
     host: "zeebe.c8.dev.local"
@@ -46,48 +49,48 @@ zeebe-gateway:
 
 operate:
   contextPath: "/operate"
-# Configure resources for local testing.
-  resources:
-    requests:
-      cpu: 500m
-      memory: 400Mi
-    limits:
-      cpu: 1500m
-      memory: 1Gi
+## Configure resources for local testing.
+#  resources:
+#    requests:
+#      cpu: 500m
+#      memory: 400Mi
+#    limits:
+#      cpu: 1500m
+#      memory: 1Gi
 
 tasklist:
   contextPath: "/tasklist"
-# Configure resources for local testing.
-  resources:
-    requests:
-      cpu: 500m
-      memory: 500Mi
-    limits:
-      cpu: 1000m
-      memory: 1Gi
+## Configure resources for local testing.
+#  resources:
+#    requests:
+#      cpu: 500m
+#      memory: 500Mi
+#    limits:
+#      cpu: 1000m
+#      memory: 1Gi
 
 optimize:
   contextPath: "/optimize"
-# Configure resources for local testing.
-  resources:
-    requests:
-      cpu: 750m
-      memory: 768Mi
-    limits:
-      cpu: 1500m
-      memory: 1536Mi
+## Configure resources for local testing.
+#  resources:
+#    requests:
+#      cpu: 750m
+#      memory: 768Mi
+#    limits:
+#      cpu: 1500m
+#      memory: 1536Mi
 
 identity:
   fullURL: "https://c8.dev.local/identity"
   contextPath: "/identity"
-# Configure resources for local testing.
-  resources:
-    requests:
-      cpu: 750m
-      memory: 500Mi
-    limits:
-      cpu: 1500m
-      memory: 1536Mi
+## Configure resources for local testing.
+#  resources:
+#    requests:
+#      cpu: 750m
+#      memory: 500Mi
+#    limits:
+#      cpu: 1500m
+#      memory: 1536Mi
   keycloak:
     extraEnvVars:
       - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
@@ -103,7 +106,7 @@ identity:
 webModeler:
   enabled: true
   image:
-    tag: 8.2.0
+    tag: 8.2.3
     pullSecrets:
       - name: dev-c8-registry
   contextPath: "/modeler"
@@ -137,14 +140,14 @@ webModeler:
       - name: dev-c8-combined
         mountPath: "/home/node/dev.c8.combined.crt"
         subPath: tls.crt
-# Configure resources for local testing.
-    resources:
-      requests:
-        cpu: 500m
-        memory: 768Mi
-      limits:
-        cpu: 1000m
-        memory: 1536Mi
+## Configure resources for local testing.
+#    resources:
+#      requests:
+#        cpu: 500m
+#        memory: 768Mi
+#      limits:
+#        cpu: 1000m
+#        memory: 1536Mi
   webapp:
     env:
       - name: ZEEBE_CLIENT_SSL_ROOT_CERTS_PATH
@@ -166,14 +169,14 @@ postgresql:
 
 connectors:
   contextPath: "/connectors"
-# Configure resources for local testing.
-  resources:
-    requests:
-      cpu: 250m
-      memory: 256Mi
-    limits:
-      cpu: 500m
-      memory: 768Mi
+## Configure resources for local testing.
+#  resources:
+#    requests:
+#      cpu: 250m
+#      memory: 256Mi
+#    limits:
+#      cpu: 500m
+#      memory: 768Mi
 
 # Configure Elasticsearch replicas and resources to make it run locally
 elasticsearch:
@@ -184,10 +187,10 @@ elasticsearch:
   # Allocate sufficient resources to start the pod.
   resources:
     requests:
-      cpu: 500m
+      cpu: 1000m
       memory: 2Gi
     limits:
-      cpu: 1000m
+      cpu: 2000m
       memory: 2Gi
   # Request smaller persistent volumes.
   volumeClaimTemplate:

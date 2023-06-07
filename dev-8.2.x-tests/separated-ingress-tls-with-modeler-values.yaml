@@ -30,6 +30,9 @@ zeebe:
  
 zeebe-gateway:
   replicas: 1
+#  env:
+#    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
+#      value: none
   ingress:
     enabled: true
     host: "zeebe.c8.dev.local"
@@ -90,7 +93,7 @@ identity:
 webModeler:
   enabled: true
   image:
-    tag: 8.2.2
+    tag: 8.2.3
     pullSecrets:
       - name: dev-c8-registry
   restapi:
@@ -182,10 +185,10 @@ elasticsearch:
         storage: 8Gi
   resources:
     requests:
-      cpu: 500m
+      cpu: 1000m
       memory: 2Gi
     limits:
-      cpu: 1000m
+      cpu: 2000m
       memory: 2Gi
   minimumMasterNodes: 1
   clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
