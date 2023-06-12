@@ -41,6 +41,11 @@ zeebe-gateway:
       secretName: "dev-c8-separated"
  
 operate:
+  env:
+    - name: CAMUNDA_OPERATE_IDENTITY_BASEURL
+      value: "https://identity.c8.dev.local"
+    - name: CAMUNDA_OPERATE_IDENTITY_RESOURCE_PERMISSIONS_ENABLED
+      value: "true"
   ingress:
     enabled: true
     host: "operate.c8.dev.local"
@@ -49,6 +54,11 @@ operate:
       secretName: "dev-c8-separated"
  
 tasklist:
+  env:
+    - name: CAMUNDA_TASKLIST_IDENTITY_BASEURL
+      value: "https://identity.c8.dev.local"
+    - name: CAMUNDA_TASKLIST_IDENTITY_RESOURCE_PERMISSIONS_ENABLED
+      value: "true"
   ingress:
     enabled: true
     host: "tasklist.c8.dev.local"
@@ -66,6 +76,27 @@ optimize:
  
 identity:
   fullURL: "https://identity.c8.dev.local"
+  env:
+    - name: RESOURCE_PERMISSIONS_ENABLED
+      value: "true"
+    - name: IDENTITY_DATABASE_HOST
+      value: "{{ .Release.Name }}-postgresql"
+    - name: IDENTITY_DATABASE_PORT
+      value: "5432"
+    #    - name: IDENTITY_DATABASE_NAME
+    #      value: "identity"
+    - name: IDENTITY_DATABASE_NAME
+      value: "bitnami_keycloak"
+    - name: IDENTITY_DATABASE_USERNAME
+      value: "bn_keycloak"
+#    - name: IDENTITY_DATABASE_PASSWORD
+#      valueFrom:
+#        secretKeyRef:
+#          name: "{{ .Release.Name }}-postgresql"
+#          key: password
+    - name: IDENTITY_DATABASE_PASSWORD
+      value: "SetThisToMakeLoginEasy"
+
   keycloak:
     extraEnvVars:
       - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
@@ -157,7 +188,15 @@ postgresql:
     password: SetThisToMakeLoginEasy
     postgresPassword: SetThisToMakeLoginEasy
 
+# Reduce Connectors resources for local testing
 connectors:
+#  resources:
+#    requests:
+#      cpu: 250m
+#      memory: 256Mi
+#    limits:
+#      cpu: 500m
+#      memory: 768Mi
   ingress:
     enabled: true
     host: "connectors.c8.dev.local"

@@ -37,7 +37,7 @@ helm install dev camunda/camunda-platform \
 
 helm install dev camunda/camunda-platform \
                  -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/separated-ingress-tls-with-modeler-values.yaml \
-                 --version 8.2.3
+                 --version 8.2.5
 
 helm install dev camunda/camunda-platform \
                  -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/separated-ingress-tls-secrets-no-connectors-values.yaml \
