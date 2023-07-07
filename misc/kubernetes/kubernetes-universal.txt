@@ -4,10 +4,14 @@ kubectl get all --all-namespaces
 # Get status:
 kubectl get pods
 
-kubectl logs pod
+# Check on messages from the scheduler:
+kubectl describe pods <pod-name>
+
+# Get pod logs:
+kubectl logs <pod_name>
 
 # Get the CLI of a pod:
-kubectl exec --stdin --tty <pod_name> -- /bin/bash
+kubectl exec --stdin --tty <pod-name> -- /bin/bash
 
 # Get the env vars of a pod:
 kubectl exec <pod_name> -- printenv
@@ -15,11 +19,25 @@ kubectl exec <pod_name> -- printenv
 # Create a PVC:
 kubectl create -f pcv.yaml
 
+# Get deployments:
+kubectl get deployments
+
+# Scale deployments:
+kubectl scale deploy <deployment> --replicas=<n>
+
 # Get the complete values.yaml for a specific version of a helm chart:
 helm show values camunda/camunda-platform --version 8.0.7 >~/temp/values-8.0.7.yaml
 helm show values camunda/camunda-platform --version 8.1.7 >~/temp/values-8.1.7.yaml
 helm show values camunda/camunda-platform --version 8.2.5 >~/temp/values-8.2.5.yaml
-helm show values bitnami --version 7.1.6 >~/temp/bitnami-values-7.1.6.yaml
+helm show values camunda/camunda-platform --version 8.2.6 >~/temp/values-8.2.6.yaml
+helm show values bitnami/postgresql >~/temp/postgresql-values.yaml
+
+# Debug values.yaml issues:
+helm install dev-debug camunda/camunda-platform \
+                 -f values.yaml \
+                 --version 8.2.5 \
+                 --dry-run --debug \
+                 >~/temp/dev-debug.log
 
 
 # Secret management:

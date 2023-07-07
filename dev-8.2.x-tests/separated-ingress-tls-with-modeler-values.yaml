@@ -20,7 +20,9 @@ global:
         redirectUrl: "https://optimize.c8.dev.local"
       webModeler:
         redirectUrl: "https://modeler.c8.dev.local"
- 
+      zeebe:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+
 # Reduce Zeebe and Gateway replicas and resources to make it run locally
 zeebe:
   clusterSize: 1
