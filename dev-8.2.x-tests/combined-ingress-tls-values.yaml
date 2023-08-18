@@ -2,7 +2,7 @@
 # You can change the global.image.tag version value as needed, just don't delete comment that follows it.
 global:
   image:
-    tag: 8.2.5
+    tag: latest
 
   ingress:
     enabled: true
@@ -14,6 +14,8 @@ global:
   identity:
     auth:
       publicIssuerUrl: "https://c8.dev.local/auth/realms/camunda-platform"
+      connectors:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
       operate:
         existingSecret: SetThisToMakeHelmUpgradesEasy
         redirectUrl: "https://c8.dev.local/operate"
@@ -23,6 +25,8 @@ global:
       optimize:
         existingSecret: SetThisToMakeHelmUpgradesEasy
         redirectUrl: "https://c8.dev.local/optimize"
+      zeebe:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
 
 # Reduce Zeebe and Gateway replicas and resources to make it run locally
 zeebe:
@@ -53,6 +57,17 @@ identity:
   fullURL: "https://c8.dev.local/identity"
   contextPath: "/identity/"
   keycloak:
+    extraEnvVars:
+      - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
+        value: "true"
+    ingress:
+      enabled: true
+      hostname: "c8.dev.local"
+      tls: true
+      extraTls:
+        - secretName: dev-c8-combined
+          hosts:
+            - c8.dev.local
     auth:
       adminPassword: SetThisToMakeLoginEasy
       managementPassword: SetThisToMakeLoginEasy

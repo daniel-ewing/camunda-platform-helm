@@ -78,9 +78,11 @@ identity:
     ingress:
       enabled: true
       hostname: "keycloak.c8.dev.local"
-      tls:
-        enabled: true
-        secretName: "dev-c8-separated"
+      tls: true
+      extraTls:
+        - secretName: dev-c8-separated
+          hosts:
+            - keycloak.c8.dev.local
     auth:
       adminPassword: SetThisToMakeLoginEasy
       managementPassword: SetThisToMakeLoginEasy

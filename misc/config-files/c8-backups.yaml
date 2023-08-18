@@ -2,6 +2,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: c8-backups
+  namespace: default
 spec:
   accessModes:
     - ReadWriteOnce

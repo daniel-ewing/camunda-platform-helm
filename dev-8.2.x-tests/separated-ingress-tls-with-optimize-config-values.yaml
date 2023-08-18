@@ -2,29 +2,27 @@
 # Note: you can change the global.image.tag version value as needed.
 global:
   image:
-    tag: 8.2.11
+    tag: latest
 
   identity:
     auth:
       publicIssuerUrl: "https://keycloak.c8.dev.local/auth/realms/camunda-platform"
-#      connectors:
-#        existingSecret:
-#          name: dev-identity-secrets
+      connectors:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
       operate:
-        existingSecret:
-          name: dev-identity-secrets
+        existingSecret: SetThisToMakeHelmUpgradesEasy
         redirectUrl: "https://operate.c8.dev.local"
       tasklist:
-        existingSecret:
-          name: dev-identity-secrets
+        existingSecret: SetThisToMakeHelmUpgradesEasy
         redirectUrl: "https://tasklist.c8.dev.local"
       optimize:
-        existingSecret:
-          name: dev-identity-secrets
+        existingSecret: SetThisToMakeHelmUpgradesEasy
         redirectUrl: "https://optimize.c8.dev.local"
       webModeler:
         redirectUrl: "https://modeler.c8.dev.local"
- 
+      zeebe:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+
 # Reduce Zeebe and Gateway replicas and resources to make it run locally
 zeebe:
   clusterSize: 1
@@ -34,9 +32,9 @@ zeebe:
  
 zeebe-gateway:
   replicas: 1
-#  env:
-#    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
-#      value: none
+  env:
+    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
+      value: none
   ingress:
     enabled: true
     host: "zeebe.c8.dev.local"
@@ -61,6 +59,15 @@ tasklist:
       secretName: "dev-c8-separated"
  
 optimize:
+  extraVolumes:
+    - name: environment-config
+      configMap:
+        name: optimize-environment-config
+        defaultMode: 0777
+  extraVolumeMounts:
+    - name: environment-config
+      mountPath: /optimize/config/environment-config.yaml
+      subPath: environment-config.yaml
   ingress:
     enabled: true
     host: "optimize.c8.dev.local"
@@ -70,7 +77,17 @@ optimize:
  
 identity:
   fullURL: "https://identity.c8.dev.local"
+  ingress:
+    enabled: true
+    host: "identity.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separated"
   keycloak:
+    postgresql:
+      auth:
+        password: SetThisToMakeLoginEasy
+        postgresPassword: SetThisToMakeLoginEasy
     extraEnvVars:
       - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
         value: "true"
@@ -81,23 +98,13 @@ identity:
         enabled: true
         secretName: "dev-c8-separated"
     auth:
-      existingSecret: dev-identity-keycloak-secrets
-#        name: dev-identity-keycloak-secrets
-    postgresql:
-      auth:
-        existingSecret: dev-identity-keycloak-postgresql-secrets
-
-  ingress:
-    enabled: true
-    host: "identity.c8.dev.local"
-    tls:
-      enabled: true
-      secretName: "dev-c8-separated"
+      adminPassword: SetThisToMakeLoginEasy
+      managementPassword: SetThisToMakeLoginEasy
 
 webModeler:
   enabled: true
   image:
-    tag: 8.2.5
+    tag: 8.2.3
     pullSecrets:
       - name: dev-c8-registry
   restapi:
@@ -117,32 +124,30 @@ webModeler:
       # Restapi.mail.fromName defines the name that will be displayed as the sender of emails sent by Web Modeler
       fromName: "Camunda Platform"
     env:
-      - name: ZEEBE_CA_CERTIFICATE_PATH
-        value: "/home/runner/dev.c8.separated.crt"
 ##      Configuration for DEBUG logging:
 #      - name: LOGGING_LEVEL_IO_GRPC
 #        value: TRACE
-#      - name: LOGGING_LEVEL_IO_CAMUNDA_MODELER
-#        value: DEBUG
+      - name: ZEEBE_CA_CERTIFICATE_PATH
+        value: "/home/node/dev.c8.separated.crt"
     extraVolumes:
       - name: dev-c8-separated
         secret:
           secretName: dev-c8-separated
     extraVolumeMounts:
       - name: dev-c8-separated
-        mountPath: "/home/runner/dev.c8.separated.crt"
+        mountPath: "/home/node/dev.c8.separated.crt"
         subPath: tls.crt
   webapp:
     env:
       - name: ZEEBE_CLIENT_SSL_ROOT_CERTS_PATH
-        value: "/home/runner/dev.c8.separated.crt"
+        value: "/home/node/dev.c8.separated.crt"
     extraVolumes:
       - name: dev-c8-separated
         secret:
           secretName: dev-c8-separated
     extraVolumeMounts:
       - name: dev-c8-separated
-        mountPath: "/home/runner/dev.c8.separated.crt"
+        mountPath: "/home/node/dev.c8.separated.crt"
         subPath: tls.crt
   ingress:
     enabled: true
@@ -160,10 +165,16 @@ webModeler:
 postgresql:
   enabled: true
   auth:
-    existingSecret: dev-modeler-postgresql-secrets
+    password: SetThisToMakeLoginEasy
+    postgresPassword: SetThisToMakeLoginEasy
 
 connectors:
-  enabled: false
+  ingress:
+    enabled: true
+    host: "connectors.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separated"
 
 # Reduce Elasticsearch replicas and resources to make it run locally
 elasticsearch:
@@ -177,10 +188,10 @@ elasticsearch:
         storage: 8Gi
   resources:
     requests:
-      cpu: 500m
+      cpu: 1000m
       memory: 2Gi
     limits:
-      cpu: 1000m
+      cpu: 2000m
       memory: 2Gi
   minimumMasterNodes: 1
   clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"

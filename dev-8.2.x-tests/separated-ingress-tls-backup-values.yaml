@@ -2,11 +2,13 @@
 # You can change the global.image.tag version value as needed.
 global:
   image:
-    tag: 8.2.5
+    tag: 8.2.11
 
   identity:
     auth:
       publicIssuerUrl: "https://keycloak.c8.dev.local/auth/realms/camunda-platform"
+      connectors:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
       operate:
         existingSecret: SetThisToMakeHelmUpgradesEasy
         redirectUrl: "https://operate.c8.dev.local"
@@ -17,8 +19,9 @@ global:
         existingSecret: SetThisToMakeHelmUpgradesEasy
         redirectUrl: "https://optimize.c8.dev.local"
       webModeler:
-        existingSecret: SetThisToMakeHelmUpgradesEasy
         redirectUrl: "https://modeler.c8.dev.local"
+      zeebe:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
 
 # Reduce Zeebe and Gateway replicas and resources to make it run locally
 zeebe:
@@ -29,6 +32,9 @@ zeebe:
 
 zeebe-gateway:
   replicas: 1
+#  env:
+#    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
+#      value: none
   ingress:
     enabled: true
     host: "zeebe.c8.dev.local"
@@ -78,15 +84,18 @@ identity:
     ingress:
       enabled: true
       hostname: "keycloak.c8.dev.local"
-      tls:
-        enabled: true
-        secretName: "dev-c8-separated"
+      tls: true
+      extraTls:
+        - secretName: dev-c8-separated
+          hosts:
+            - keycloak.c8.dev.local
     auth:
       adminPassword: SetThisToMakeLoginEasy
       managementPassword: SetThisToMakeLoginEasy
     postgresql:
       auth:
         password: SetThisToMakeLoginEasy
+        postgresPassword: SetThisToMakeLoginEasy
   ingress:
     enabled: true
     host: "identity.c8.dev.local"
@@ -97,7 +106,7 @@ identity:
 web-modeler:
   enabled: true
   image:
-    tag: 0.7.0-beta
+    tag: 8.2.5
     pullSecrets:
       - name: dev-c8-registry
   restapi:
@@ -154,9 +163,12 @@ web-modeler:
       tls:
         enabled: true
         secretName: "dev-c8-separated"
-  postgresql:
-    auth:
-      password: SetThisToMakeLoginEasy
+
+postgresql:
+  enabled: true
+  auth:
+    password: SetThisToMakeLoginEasy
+    postgresPassword: SetThisToMakeLoginEasy
 
 # Reduce Elasticsearch replicas and resources to make it run locally
 elasticsearch:
@@ -182,10 +194,10 @@ elasticsearch:
         storage: 8Gi
   resources:
     requests:
-      cpu: "100m"
-      memory: "2G"
+      cpu: 1000m
+      memory: 2Gi
     limits:
-      cpu: "1000m"
-      memory: "2G"
+      cpu: 2000m
+      memory: 2Gi
   minimumMasterNodes: 1
   clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"

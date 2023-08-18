@@ -45,6 +45,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: c8-backups
+  namespace: default
 spec:
   accessModes:
     - ReadWriteOnce
@@ -53,11 +54,11 @@ spec:
       storage: 8Gi
 
 
-4. Create the PVC from the file (this step has to be completed after minikube is running, see step 2 of XXX):
-kubectl create -f c8-backups.yaml
+4. Create the PVC from the file (this step has to be completed after minikube is running):
+kubectl create -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/misc/config-files/c8-backups.yaml
 
 
-5. Continue with installing the helm deployment according to XXX, but use the new values.yaml.
+5. Continue with installing the helm deployment using the updated new values.yaml.
 
 
 6. Get the name of all pods:
@@ -66,7 +67,7 @@ kubectl get pods
 
 7. Open the Elasticsearch CLI, create the snapshot repository, and exit the Elasticsearch CLI:
 
-kubectl exec --stdin --tty <dev-elasticsearch-pod-name-here> -- /bin/bash
+kubectl exec --stdin --tty elasticsearch-master-0 -- /bin/bash
 
 curl -X PUT 'localhost:9200/_snapshot/c8-backups?pretty' \
  -H 'content-type: application/json' -d \
@@ -86,9 +87,9 @@ kubectl exec --stdin --tty <dev-optimize-pod-name-here> -- /bin/bash
 
 curl --request POST 'http://localhost:8092/actuator/backup' \
 -H 'content-type: application/json' \
--d '{ "backupId": "backup1" }'
+-d '{ "backupId": "202308091816" }'
 
-curl --request GET 'http://localhost:8092/actuator/backup/backup1'
+curl --request GET 'http://localhost:8092/actuator/backup/202308091816'
 
 exit
 
@@ -102,9 +103,9 @@ kubectl exec --stdin --tty <dev-operate-pod-name-here> -- /bin/bash
 
 curl --request POST 'http://localhost:8080/actuator/backup' \
 -H 'content-type: application/json' \
--d '{ "backupId": "backup1" }'
+-d '{ "backupId": "202308091816" }'
 
-curl --request GET 'http://localhost:8080/actuator/backup/backup1'
+curl --request GET 'http://localhost:8080/actuator/backup/202308091816'
 
 exit
 

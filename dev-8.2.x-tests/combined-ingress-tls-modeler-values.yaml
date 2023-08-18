@@ -2,7 +2,7 @@
 # You can change the global.image.tag version value as needed, just don't delete comment that follows it.
 global:
   image:
-    tag: 8.2.5
+    tag: latest
 
   ingress:
     enabled: true
@@ -27,6 +27,8 @@ global:
         redirectUrl: "https://c8.dev.local/optimize"
       webModeler:
         redirectUrl: "https://c8.dev.local/modeler"
+      zeebe:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
 
 # Configure Zeebe and Gateway replicas and resources for local testing.
 zeebe:
@@ -95,6 +97,14 @@ identity:
     extraEnvVars:
       - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
         value: "true"
+    ingress:
+      enabled: true
+      hostname: "c8.dev.local"
+      tls: true
+      extraTls:
+        - secretName: dev-c8-combined
+          hosts:
+            - c8.dev.local
     auth:
       adminPassword: SetThisToMakeLoginEasy
       managementPassword: SetThisToMakeLoginEasy
@@ -106,7 +116,7 @@ identity:
 webModeler:
   enabled: true
   image:
-    tag: 8.2.3
+    tag: 8.2.5
     pullSecrets:
       - name: dev-c8-registry
   contextPath: "/modeler"

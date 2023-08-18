@@ -39,16 +39,20 @@ helm install dev camunda/camunda-platform \
                  --version 8.0.7
 
 helm install dev camunda/camunda-platform \
-                 -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/combined-ingress-tls-modeler-values.yaml \
-                 --version 8.2.2
-
-helm install dev camunda/camunda-platform \
                  -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/combined-ingress-tls-secrets-elastic-8.5.0-no-connectors-no-modeler-values.yaml \
                  --version 8.2.2
 
 helm install dev camunda/camunda-platform \
                  -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/combined-ingress-tls-values.yaml \
                  --version 8.2.2
+
+helm install dev camunda/camunda-platform \
+                 -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-temp/keycloak_production_values.yaml \
+                 --version 8.2.5
+
+helm install dev camunda/camunda-platform \
+                 -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/combined-ingress-tls-modeler-values.yaml \
+                 --version 8.2.8
 
 # Terminal 3:
 minikube tunnel

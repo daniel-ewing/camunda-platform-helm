@@ -2,7 +2,7 @@
 # Note: you can change the global.image.tag version value as needed.
 global:
   image:
-    tag: 8.1.9
+    tag: 8.1.4
 
   identity:
     auth:
@@ -68,9 +68,11 @@ identity:
     ingress:
       enabled: true
       hostname: "keycloak.c8.dev.local"
-      tls:
-        enabled: true
-        secretName: "dev-c8-separated"
+      tls: true
+      extraTls:
+        - secretName: dev-c8-separated
+          hosts:
+            - keycloak.c8.dev.local
     auth:
       adminPassword: SetThisToMakeLoginEasy
       managementPassword: SetThisToMakeLoginEasy
@@ -111,6 +113,11 @@ web-modeler:
         value: "false"
       - name: ZEEBE_CA_CERTIFICATE_PATH
         value: "/home/runner/dev.c8.separated.crt"
+##      Configuration for DEBUG logging:
+#      - name: LOGGING_LEVEL_IO_GRPC
+#        value: TRACE
+#      - name: LOGGING_LEVEL_IO_CAMUNDA_MODELER
+#        value: DEBUG
     extraVolumes:
       - name: dev-c8-separated
         secret:

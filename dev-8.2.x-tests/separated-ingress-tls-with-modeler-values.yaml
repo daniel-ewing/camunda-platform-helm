@@ -2,7 +2,7 @@
 # Note: you can change the global.image.tag version value as needed.
 global:
   image:
-    tag: latest
+    tag: 8.2.10
 
   identity:
     auth:
@@ -75,9 +75,11 @@ identity:
     ingress:
       enabled: true
       hostname: "keycloak.c8.dev.local"
-      tls:
-        enabled: true
-        secretName: "dev-c8-separated"
+      tls: true
+      extraTls:
+        - secretName: dev-c8-separated
+          hosts:
+            - keycloak.c8.dev.local
     auth:
       adminPassword: SetThisToMakeLoginEasy
       managementPassword: SetThisToMakeLoginEasy
@@ -95,7 +97,7 @@ identity:
 webModeler:
   enabled: true
   image:
-    tag: 8.2.3
+    tag: 8.2.5
     pullSecrets:
       - name: dev-c8-registry
   restapi:
@@ -115,30 +117,32 @@ webModeler:
       # Restapi.mail.fromName defines the name that will be displayed as the sender of emails sent by Web Modeler
       fromName: "Camunda Platform"
     env:
+      - name: ZEEBE_CA_CERTIFICATE_PATH
+        value: "/home/runner/dev.c8.separated.crt"
 ##      Configuration for DEBUG logging:
 #      - name: LOGGING_LEVEL_IO_GRPC
 #        value: TRACE
-      - name: ZEEBE_CA_CERTIFICATE_PATH
-        value: "/home/node/dev.c8.separated.crt"
+#      - name: LOGGING_LEVEL_IO_CAMUNDA_MODELER
+#        value: DEBUG
     extraVolumes:
       - name: dev-c8-separated
         secret:
           secretName: dev-c8-separated
     extraVolumeMounts:
       - name: dev-c8-separated
-        mountPath: "/home/node/dev.c8.separated.crt"
+        mountPath: "/home/runner/dev.c8.separated.crt"
         subPath: tls.crt
   webapp:
     env:
       - name: ZEEBE_CLIENT_SSL_ROOT_CERTS_PATH
-        value: "/home/node/dev.c8.separated.crt"
+        value: "/home/runner/dev.c8.separated.crt"
     extraVolumes:
       - name: dev-c8-separated
         secret:
           secretName: dev-c8-separated
     extraVolumeMounts:
       - name: dev-c8-separated
-        mountPath: "/home/node/dev.c8.separated.crt"
+        mountPath: "/home/runner/dev.c8.separated.crt"
         subPath: tls.crt
   ingress:
     enabled: true

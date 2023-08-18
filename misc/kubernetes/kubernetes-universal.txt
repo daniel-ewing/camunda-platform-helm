@@ -16,20 +16,23 @@ kubectl exec --stdin --tty <pod-name> -- /bin/bash
 # Get the env vars of a pod:
 kubectl exec <pod_name> -- printenv
 
-# Create a PVC:
-kubectl create -f pcv.yaml
+# Create a resource from a file (ConfigMap, PVC, etc.):
+kubectl create -f file.yaml
 
 # Get deployments:
 kubectl get deployments
 
-# Scale deployments:
+# Scale a deployment:
 kubectl scale deploy <deployment> --replicas=<n>
+
+# Scale a replica set - a set of pod(s):
+kubectl scale rs/<replicaSet> --replicas=<n>
 
 # Get the complete values.yaml for a specific version of a helm chart:
 helm show values camunda/camunda-platform --version 8.0.7 >~/temp/values-8.0.7.yaml
-helm show values camunda/camunda-platform --version 8.1.7 >~/temp/values-8.1.7.yaml
-helm show values camunda/camunda-platform --version 8.2.5 >~/temp/values-8.2.5.yaml
-helm show values camunda/camunda-platform --version 8.2.6 >~/temp/values-8.2.6.yaml
+helm show values camunda/camunda-platform --version 8.1.14 >~/temp/values-8.1.14.yaml
+helm show values camunda/camunda-platform --version 8.1.15 >~/temp/values-8.1.15.yaml
+helm show values camunda/camunda-platform --version 8.2.11 >~/temp/values-8.2.11.yaml
 helm show values bitnami/postgresql >~/temp/postgresql-values.yaml
 
 # Debug values.yaml issues:
@@ -39,6 +42,11 @@ helm install dev-debug camunda/camunda-platform \
                  --dry-run --debug \
                  >~/temp/dev-debug.log
 
+# Get deployed chart version:
+helm list <--namespace default>
+
+# Get all versions of a chart:
+helm search repo camunda/camunda-platform --versions
 
 # Secret management:
 kubectl create secret generic dev-c8-separated \
@@ -53,9 +61,9 @@ kubectl create secret generic dev-c8-combined \
 
 kubectl create secret docker-registry dev-c8-registry \
                                       --docker-server=registry.camunda.cloud \
-                                      --docker-username=daniel.ewing \
+                                      --docker-username=name \
                                       --docker-password='' \
-                                      --docker-email=daniel.ewing@camunda.com
+                                      --docker-email=name@domain.com
 
 
 kubectl create secret generic dev-identity-secrets \

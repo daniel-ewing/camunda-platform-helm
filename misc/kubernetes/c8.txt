@@ -57,6 +57,8 @@ kubectl port-forward svc/dev-operate 8081:80 &
 kubectl port-forward svc/dev-tasklist 8082:80 &
 kubectl port-forward svc/dev-optimize 8083:80 &
 kubectl port-forward svc/dev-keycloak 18080:80 &
+kubectl port-forward svc/elasticsearch-master 9200:9200 &
+kubectl port-forward svc/dev-postgresql 5432:5432 &
 
     
 # Get a list of helm deployments:
