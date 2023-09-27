@@ -52,6 +52,10 @@ docker export -o dump.tar <id | name>
 tar -tvf dump.tar
 
 
+# Get file system of stopped image:
+docker save -o dump.tar <id | name>
+mkdir dump && tar -xf dump.tar -C dump
+
 # Build a dockerfile:
 docker build . -t <image>:<tag>
 

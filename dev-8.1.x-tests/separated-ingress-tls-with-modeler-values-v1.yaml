@@ -1,4 +1,7 @@
-# Chart values for the Camunda Platform 8 Helm chart in separate ingress setup. 
+#############################################
+# Use this with values-8.1.6.yaml or lower. #
+#############################################
+# Chart values for the Camunda Platform 8 Helm chart in separate ingress setup.
 # Note: you can change the global.image.tag version value as needed.
 global:
   image:

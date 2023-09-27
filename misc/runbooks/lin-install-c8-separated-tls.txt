@@ -1,8 +1,19 @@
 # Terminal 1:
 minikube delete --all
-minikube start --driver=docker --memory=14.5G --cpus max --nodes 1
+minikube start --driver=docker --memory=40G --cpus max --nodes 1
 minikube addons enable ingress
 minikube addons enable dashboard
+minikube dashboard &
+
+# Terminal 1:
+minikube delete --all
+minikube start --driver=docker --memory=20G --cpus max --nodes 2
+minikube addons enable ingress
+minikube addons enable dashboard
+kubectl label node minikube-m02 node-role.kubernetes.io/worker=worker
+minikube addons disable storage-provisioner
+kubectl delete storageclass standard
+kubectl apply -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/misc/config-files/kubevirt-hostpath-provisioner.yaml
 minikube dashboard &
 
 # Terminal 2:
@@ -43,8 +54,16 @@ helm install dev camunda/camunda-platform \
                  --version 8.1.6
 
 helm install dev camunda/camunda-platform \
+                 -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.1.x-tests/separated-ingress-tls-with-modeler-values-v2.yaml \
+                 --version 8.1.15
+
+helm install dev camunda/camunda-platform \
                  -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/separated-ingress-tls-with-modeler-values.yaml \
-                 --version 8.2.10
+                 --version 8.2.12
+
+helm upgrade dev camunda/camunda-platform \
+                 -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/separated-ingress-tls-with-modeler-values.yaml \
+                 --version 8.2.12
 
 helm install dev camunda/camunda-platform \
                  -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/separated-ingress-tls-external-postgresql-values.yaml \
