@@ -8,13 +8,16 @@ kubectl get pods
 kubectl describe pods <pod-name>
 
 # Get pod logs:
-kubectl logs <pod_name>
+kubectl logs <pod-name>
 
 # Get the CLI of a pod:
 kubectl exec --stdin --tty <pod-name> -- /bin/bash
 
 # Get the env vars of a pod:
-kubectl exec <pod_name> -- printenv
+kubectl exec <pod-name> -- printenv
+
+# Copy a local file into a pod->container:
+kubectl cp /<path-to-file>/<file-name> <pod-name>:<fully-qualified-file-name> -c <container-name>
 
 # Create a resource from a file (ConfigMap, PVC, etc.):
 kubectl create -f file.yaml
