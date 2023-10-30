@@ -1,8 +1,10 @@
 # Chart values for the Camunda Platform 8 Helm chart in separate ingress setup. 
 # Note: you can change the global.image.tag version value as needed.
 global:
+  multitenancy:
+    enabled: true
   image:
-    tag: 8.2.10
+    tag: 8.3.1
 
   identity:
     auth:
@@ -20,6 +22,9 @@ global:
         redirectUrl: "https://optimize.c8.dev.local"
       webModeler:
         redirectUrl: "https://modeler.c8.dev.local"
+      console:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl:  "https://console.c8.dev.local"
       zeebe:
         existingSecret: SetThisToMakeHelmUpgradesEasy
 
@@ -93,11 +98,16 @@ identity:
     tls:
       enabled: true
       secretName: "dev-c8-separated"
+  postgresql:
+    enabled: true
+    auth:
+      password: SetThisToMakeLoginEasy
+      postgresPassword: SetThisToMakeLoginEasy
 
 webModeler:
   enabled: true
   image:
-    tag: 8.2.5
+    tag: 8.3.0
     pullSecrets:
       - name: dev-c8-registry
   restapi:
@@ -173,20 +183,9 @@ connectors:
 
 # Reduce Elasticsearch replicas and resources to make it run locally
 elasticsearch:
-#  imageTag: 7.17.3  # Uncomment this line and set a value if you want to override the default chart value.
-  replicas: 1
-  volumeClaimTemplate:
-    accessModes: [ "ReadWriteOnce" ]
-    storageClassName: "standard"
-    resources:
-      requests:
-        storage: 8Gi
-  resources:
-    requests:
-      cpu: 1000m
-      memory: 2Gi
-    limits:
-      cpu: 2000m
-      memory: 2Gi
-  minimumMasterNodes: 1
-  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
+#  image: # Uncomment these lines and set a value if you want to override the default chart value.
+#    tag: 8.7.1
+  master:
+    replicaCount: 1
+    persistence:
+      size: 8Gi
