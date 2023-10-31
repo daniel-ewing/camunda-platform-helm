@@ -34,15 +34,15 @@ openssl req -newkey rsa:4096 \
             -x509 \
             -sha256 \
             -days 9999 \
-            -nodes \
+            -noenc \
             -addext "subjectAltName=DNS:connectors.c8.dev.local,DNS:console.c8.dev.local,DNS:identity.c8.dev.local,DNS:keycloak.c8.dev.local,DNS:modeler.c8.dev.local,DNS:operate.c8.dev.local,DNS:optimize.c8.dev.local,DNS:tasklist.c8.dev.local,DNS:websockets.c8.dev.local,DNS:zeebe.c8.dev.local" \
             -out dev.c8.separated.crt \
             -keyout dev.c8.separated.key \
             -subj "/CN=c8.dev.local"
 
 kubectl create secret generic dev-c8-separated \
-                              --from-file=tls.crt=dev.c8.separated.crt \
-                              --from-file=tls.key=dev.c8.separated.key
+                              --from-file=tls.crt=/home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separated.crt \
+                              --from-file=tls.key=/home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separated.key
 
 cd /home/administrator/software/commands/config-files
 kubectl create secret generic dev-c8-registry \

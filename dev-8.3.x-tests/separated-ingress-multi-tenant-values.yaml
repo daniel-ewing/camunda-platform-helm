@@ -37,11 +37,11 @@ zeebe:
  
 zeebe-gateway:
   replicas: 1
-  env:
-    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
-      value: none
+#  env:
+#    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
+#      value: none
   ingress:
-    enabled: false
+    enabled: true
 #    enabled: true
     host: "zeebe.c8.dev.local"
     tls:
