@@ -87,6 +87,11 @@ helm install dev camunda/camunda-platform \
                  -f separated-ingress-multi-tenant-values.yaml \
                  --version 8.3.4
 
+cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.3.x-tests
+helm install dev camunda/camunda-platform \
+                 -f separated-ingress-multi-tenant-external-identity-postgresql-values.yaml \
+                 --version 8.3.4
+
 
 # Terminal 3:
 minikube tunnel
