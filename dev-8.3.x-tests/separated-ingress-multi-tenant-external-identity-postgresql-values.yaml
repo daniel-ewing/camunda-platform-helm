@@ -4,7 +4,7 @@ global:
   multitenancy:
     enabled: true
   image:
-    tag: 8.3.4
+    tag: 8.3.1
 
   identity:
     auth:
@@ -42,6 +42,7 @@ zeebe-gateway:
 #      value: none
   ingress:
     enabled: true
+#    enabled: true
     host: "zeebe.c8.dev.local"
     tls:
       enabled: true
@@ -107,16 +108,28 @@ identity:
 webModeler:
   enabled: true
   image:
-#    tag: 8.3.2 # Uncomment this line and set a value if you want to override the default chart value.
+    tag: 8.3.0
     pullSecrets:
       - name: dev-c8-registry
   restapi:
     mail:
+      # Restapi.mail.smtpHost defines the host name of the SMTP server to be used by Web Modeler
+      smtpHost: ""
+      # Restapi.mail.smtpPort defines the port number of the SMTP server
+      smtpPort: 587
+      # Restapi.mail.smtpUser can be used to provide a user for the SMTP server
+      smtpUser: ""
+      # Restapi.mail.smtpPassword can be used to provide a password for the SMTP server
+      smtpPassword: ""
+      # Restapi.mail.smtpTlsEnabled if true, enforces TLS encryption for SMTP connections (using STARTTLS)
+      smtpTlsEnabled: true
+      # Restapi.mail.fromAddress defines the email address that will be displayed as the sender of emails sent by Web Modeler
       fromAddress: "no-reply@camunda.com"
+      # Restapi.mail.fromName defines the name that will be displayed as the sender of emails sent by Web Modeler
       fromName: "Camunda Platform"
     env:
-#      - name: ZEEBE_INSECURE_CONNECTION
-#        value: "false"
+      - name: ZEEBE_INSECURE_CONNECTION
+        value: "false"
       - name: ZEEBE_CA_CERTIFICATE_PATH
         value: "/home/runner/dev.c8.separated.crt"
 ##      Configuration for DEBUG logging:
@@ -134,8 +147,8 @@ webModeler:
         subPath: tls.crt
   webapp:
     env:
-#      - name: ZEEBE_SECURE_CONNECTION
-#        value: "true"
+      - name: ZEEBE_SECURE_CONNECTION
+        value: "true"
       - name: ZEEBE_CLIENT_SSL_ROOT_CERTS_PATH
         value: "/home/runner/dev.c8.separated.crt"
     extraVolumes:
@@ -176,7 +189,7 @@ connectors:
 # Reduce Elasticsearch replicas and resources to make it run locally
 elasticsearch:
 #  image: # Uncomment these lines and set a value if you want to override the default chart value.
-#    tag: 8.8.2
+#    tag: 8.7.1
   master:
     replicaCount: 1
     persistence:

@@ -51,13 +51,16 @@ kubectl logs -f <pod_name>
 kubectl exec --stdin --tty <pod_name> -- /bin/bash
 
 # Forward host ports:
-kubectl port-forward svc/dev-zeebe-gateway 26500:26500 -n default &
+kubectl port-forward svc/dev-zeebe-gateway 26500:26500 &
 kubectl port-forward svc/dev-identity 8080:80 &
+kubectl port-forward svc/dev-operate 8081:80 &
 kubectl port-forward svc/dev-operate 8081:80 &
 kubectl port-forward svc/dev-tasklist 8082:80 &
 kubectl port-forward svc/dev-optimize 8083:80 &
+kubectl port-forward svc/dev-web-modeler-webapp 8070:80 &
+kubectl port-forward dev-web-modeler-webapp-bf55f545d-k5k7h 8070:8070 &
 kubectl port-forward svc/dev-keycloak 18080:80 &
-kubectl port-forward svc/elasticsearch-master 9200:9200 &
+kubectl port-forward svc/dev-elasticsearch-master 9200:9200 &
 kubectl port-forward svc/dev-postgresql 5432:5432 &
 
     

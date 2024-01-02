@@ -44,9 +44,8 @@ kubectl create secret generic dev-c8-separated \
                               --from-file=tls.crt=/home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separated.crt \
                               --from-file=tls.key=/home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separated.key
 
-cd /home/administrator/software/commands/config-files
 kubectl create secret generic dev-c8-registry \
-                              --from-file=.dockerconfigjson=dev-c8-registry-config.json \
+                              --from-file=.dockerconfigjson=/home/administrator/software/commands/config-files/dev-c8-registry-config.json \
                               --type=kubernetes.io/dockerconfigjson
 
 #
@@ -76,22 +75,18 @@ helm install dev camunda/camunda-platform \
 cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests
 helm install dev camunda/camunda-platform \
                  -f separated-ingress-values.yaml \
-                 --version 8.2.15
-
-cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests
-helm upgrade dev camunda/camunda-platform \
-                 -f separated-ingress-values.yaml \
-                 --version 8.2.15
+                 --version 8.2.17
 
 cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.3.x-tests
 helm install dev camunda/camunda-platform \
                  -f separated-ingress-values.yaml \
-                 --version 8.3.1
+                 --version 8.3.4
 
 cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.3.x-tests
 helm install dev camunda/camunda-platform \
                  -f separated-ingress-multi-tenant-values.yaml \
-                 --version 8.3.1
+                 --version 8.3.4
+
 
 # Terminal 3:
 minikube tunnel

@@ -1,0 +1,45 @@
+zbctl status \
+      --address zeebe.c8.dev.local:443 \
+      --certPath="/home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.combined.crt"
+
+zbctl status --address zeebe.c8.dev.local:443 --certPath="/home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separated.crt"
+
+zbctl status --address zeebe.c8.dev.local:443 --audience zeebe-api --authzUrl https://keycloak.c8.dev.local/auth/realms/camunda-platform/protocol/openid-connect/token --certPath /home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separated.crt --clientId zeebe --clientSecret SetThisToMakeHelmUpgradesEasy
+
+
+
+#
+# Port Forwarding
+#
+
+# For ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE=none
+
+zbctl status \
+      --address localhost:26500 \
+      --certPath /home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separated.crt \
+      --insecure
+
+# For ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE=identity
+
+zbctl --address localhost:26500 \
+      --audience zeebe-api \
+      --authzUrl http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token \
+      --certPath /home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separated.crt \
+      --clientId zeebe \
+      --clientSecret SetThisToMakeHelmUpgradesEasy \
+      --insecure \
+      status
+
+zbctl --address localhost:26500 \
+      --audience zeebe-api \
+      --authzUrl http://localhost:18080/auth/realms/camunda-platform/protocol/openid-connect/token \
+      --certPath /home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separated.crt \
+      --clientId zeebe \
+      --clientSecret SetThisToMakeHelmUpgradesEasy \
+      --insecure \
+      --tenant default \
+      deploy resource ~/Documents/webhookTest.bpmn \
+      --resourceNames webhookTest
+
+
+
