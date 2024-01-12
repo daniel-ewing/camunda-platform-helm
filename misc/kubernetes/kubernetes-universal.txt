@@ -27,17 +27,21 @@ kubectl get deployments
 
 # Scale a deployment:
 kubectl scale deploy <deployment> --replicas=<n>
-kubectl scale deploy dev-tasklist --replicas=0
+kubectl scale deploy dev-tasklist --replicas=0/home/administrator/temp/values-8.3.5.yaml
 kubectl scale deploy dev-optimize --replicas=0
 
 # Scale a replica set - a set of pod(s):
 kubectl scale rs/<replicaSet> --replicas=<n>
 
+# Get all versions of a chart:
+helm search repo camunda/camunda-platform --versions
+
 # Get the complete values.yaml for a specific version of a helm chart:
 helm show values camunda/camunda-platform --version 8.0.7 >~/temp/values-8.0.7.yaml
 helm show values camunda/camunda-platform --version 8.1.21 >~/temp/values-8.1.21.yaml
 helm show values camunda/camunda-platform --version 8.2.19 >~/temp/values-8.2.19.yaml
-helm show values camunda/camunda-platform --version 8.3.4 >~/temp/values-8.3.4.yaml
+helm show values camunda/camunda-platform --version 8.3.5 >~/temp/values-8.3.5.yaml
+helm show values camunda/camunda-platform --version 9.0.2 >~/temp/values-9.0.2.yaml
 
 helm show values bitnami/postgresql >~/temp/postgresql-values.yaml
 
@@ -50,9 +54,6 @@ helm install dev-debug camunda/camunda-platform \
 
 # Get deployed chart version:
 helm list <--namespace default>
-
-# Get all versions of a chart:
-helm search repo camunda/camunda-platform --versions
 
 # Secret management:
 kubectl create secret generic dev-c8-separated \
