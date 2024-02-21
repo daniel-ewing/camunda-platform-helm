@@ -2,7 +2,7 @@
 # You can change the global.image.tag version value as needed, just don't delete comment that follows it.
 global:
   image:
-    tag: 8.2.7
+    tag: 8.4.3
 
   ingress:
     enabled: true
@@ -15,25 +15,25 @@ global:
     auth:
       publicIssuerUrl: "https://c8.dev.local/auth/realms/camunda-platform"
       connectors:
-        existingSecret: dev-identity-secrets
+        existingSecret: SetThisToMakeHelmUpgradesEasy
       operate:
-        existingSecret:
-          name: dev-identity-secrets
+        existingSecret: SetThisToMakeHelmUpgradesEasy
         redirectUrl: "https://c8.dev.local/operate"
       tasklist:
-        existingSecret:
-          name: dev-identity-secrets
+        existingSecret: SetThisToMakeHelmUpgradesEasy
         redirectUrl: "https://c8.dev.local/tasklist"
       optimize:
-        existingSecret:
-          name: dev-identity-secrets
+        existingSecret: SetThisToMakeHelmUpgradesEasy
         redirectUrl: "https://c8.dev.local/optimize"
       webModeler:
         redirectUrl: "https://c8.dev.local/modeler"
+      console:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl:  "https://console.c8.dev.local"
       zeebe:
-        existingSecret: dev-identity-secrets
+        existingSecret: SetThisToMakeHelmUpgradesEasy
 
-# Reduce Zeebe and Gateway replicas and resources to make it run locally
+# Configure Zeebe and Gateway replicas and resources for local testing.
 zeebe:
   clusterSize: 1
   partitionCount: 1
@@ -64,21 +64,27 @@ optimize:
 identity:
   fullURL: "https://c8.dev.local/identity"
   contextPath: "/identity"
+  postgresql:
+    enabled: true
+    auth:
+      password: SetThisToMakeLoginEasy
+      postgresPassword: SetThisToMakeLoginEasy
   keycloak:
+    postgresql:
+      auth:
+        password: SetThisToMakeLoginEasy
+        postgresPassword: SetThisToMakeLoginEasy
     extraEnvVars:
       - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
         value: "true"
     auth:
-      existingSecret: dev-identity-keycloak-secrets
-    postgresql:
-      auth:
-        existingSecret: dev-identity-keycloak-postgresql-secrets
+      adminPassword: SetThisToMakeLoginEasy
+      managementPassword: SetThisToMakeLoginEasy
 
 webModeler:
-#  enabled: false
   enabled: true
   image:
-    tag: 8.2.1
+#    tag: 8.4.1 # Uncomment this line and set a value if you want to override the default chart value.
     pullSecrets:
       - name: dev-c8-registry
   contextPath: "/modeler"
@@ -86,8 +92,10 @@ webModeler:
     mail:
       fromAddress: "no-reply@camunda.com"
     env:
+#      - name: ZEEBE_INSECURE_CONNECTION
+#        value: "false"
       - name: ZEEBE_CA_CERTIFICATE_PATH
-        value: "/home/runner/dev.c8.combined.crt"
+        value: "/home/runner/dev.c8.separated.crt"
 ##      Configuration for DEBUG logging:
 #      - name: LOGGING_LEVEL_IO_GRPC
 #        value: TRACE
@@ -103,8 +111,10 @@ webModeler:
         subPath: tls.crt
   webapp:
     env:
+#      - name: ZEEBE_SECURE_CONNECTION
+#        value: "true"
       - name: ZEEBE_CLIENT_SSL_ROOT_CERTS_PATH
-        value: "/home/runner/dev.c8.combined.crt"
+        value: "/home/runner/dev.c8.separated.crt"
     extraVolumes:
       - name: dev-c8-combined
         secret:
@@ -117,28 +127,23 @@ webModeler:
 postgresql:
   enabled: true
   auth:
-    existingSecret: dev-modeler-postgresql-secrets
+    password: SetThisToMakeLoginEasy
+    postgresPassword: SetThisToMakeLoginEasy
 
 connectors:
-  enabled: true
   contextPath: "/connectors"
+
+#
+# WARNING: Console is currently under development and should not be used yet.
+#
+console:
+  enabled: false
 
 # Reduce Elasticsearch replicas and resources to make it run locally
 elasticsearch:
-  #  imageTag: 7.17.3  # Uncomment this line and set a value if you want to override the default chart value.
-  replicas: 1
-  volumeClaimTemplate:
-    accessModes: [ "ReadWriteOnce" ]
-    storageClassName: "standard"
-    resources:
-      requests:
-        storage: 8Gi
-  resources:
-    requests:
-      cpu: 1000m
-      memory: 2Gi
-    limits:
-      cpu: 2000m
-      memory: 2Gi
-  minimumMasterNodes: 1
-  clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
+  image: # Uncomment these lines and set a value if you want to override the default chart value.
+    tag: 8.12.1 # Uncomment these lines and set a value if you want to override the default chart value.
+  master:
+    replicaCount: 1
+    persistence:
+      size: 8Gi

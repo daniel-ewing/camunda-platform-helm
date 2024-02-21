@@ -80,17 +80,37 @@ helm install dev camunda/camunda-platform \
 cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.3.x-tests
 helm install dev camunda/camunda-platform \
                  -f separated-ingress-values.yaml \
-                 --version 8.3.5
+                 --version 8.3.4
 
 cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.3.x-tests
-helm install dev camunda/camunda-platform \
+helm upgrade dev camunda/camunda-platform \
                  -f separated-ingress-multi-tenant-values.yaml \
-                 --version 8.3.5
+                 --version 8.3.4
 
 cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.3.x-tests
 helm install dev camunda/camunda-platform \
                  -f separated-ingress-multi-tenant-external-identity-postgresql-values.yaml \
                  --version 8.3.5
+
+cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.3.x-tests
+helm install dev camunda/camunda-platform \
+                 -f separated-ingress-backup-values.yaml \
+                 --version 8.3.5
+
+cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.3.x-tests
+helm upgrade dev camunda/camunda-platform \
+                 -f separated-ingress-ilm-values.yaml \
+                 --version 8.3.5
+
+cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-9.1.x-tests
+helm install dev camunda/camunda-platform \
+                 -f separated-ingress-values.yaml \
+                 --version 9.1.2
+
+cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-9.1.x-tests
+helm upgrade dev camunda/camunda-platform \
+                 -f separated-ingress-values.yaml \
+                 --version 9.1.0
 
 
 # Terminal 3:

@@ -4,8 +4,9 @@ https://docs.camunda.io/docs/self-managed/backup-restore/backup-and-restore/
 
 To create backups:
 
-1. Add configure to the elasticsearch section of the values.yaml:
+1. Add configuration to the elasticsearch section of the values.yaml:
 
+-Helm Charts < 8.3.0
   # Configuration for backups
   extraEnvs:
     - name: "xpack.security.enabled"
@@ -20,8 +21,21 @@ To create backups:
     - name: c8-backups
       mountPath: /usr/share/elasticsearch/c8-backups
 
+-Helm Charts >= 8.3.0
+  # Configuration for backups
+  security:
+    enabled: false
+  snapshotRepoPath: "/usr/share/elasticsearch/c8-backups"
+  extraVolumes:
+    - name: c8-backups
+      persistentVolumeClaim:
+        claimName: c8-backups
+  extraVolumeMounts:
+    - name: c8-backups
+      mountPath: /usr/share/elasticsearch/c8-backups
 
-2. Add configure to the operate, optimize, and tasklist sections of the values.yaml :
+
+2. Add configuration to the operate, optimize, and tasklist sections of the values.yaml :
 
   # Configuration for backup
   env:
@@ -67,7 +81,7 @@ kubectl get pods
 
 7. Open the Elasticsearch CLI, create the snapshot repository, and exit the Elasticsearch CLI:
 
-kubectl exec --stdin --tty elasticsearch-master-0 -- /bin/bash
+kubectl exec --stdin --tty dev-elasticsearch-master-0 -- /bin/bash
 
 curl -X PUT 'localhost:9200/_snapshot/c8-backups?pretty' \
  -H 'content-type: application/json' -d \
@@ -85,9 +99,15 @@ exit
 
 kubectl exec --stdin --tty <dev-optimize-pod-name-here> -- /bin/bash
 
+# Helm Charts < 8.3.0
 curl --request POST 'http://localhost:8092/actuator/backup' \
 -H 'content-type: application/json' \
 -d '{ "backupId": "202308091816" }'
+
+# Helm Charts > 8.3.0
+curl -kLv --request POST 'http://localhost:8092/actuator/backups' \
+-H 'content-type: application/json' \
+-d '{ "backupId": "202401311131" }'
 
 curl --request GET 'http://localhost:8092/actuator/backup/202308091816'
 

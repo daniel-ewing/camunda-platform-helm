@@ -4,7 +4,7 @@ global:
   multitenancy:
     enabled: true
   image:
-    tag: 8.3.5
+    tag: 8.3.4
 
   identity:
     auth:
@@ -113,7 +113,6 @@ webModeler:
   restapi:
     mail:
       fromAddress: "no-reply@camunda.com"
-      fromName: "Camunda Platform"
     env:
 #      - name: ZEEBE_INSECURE_CONNECTION
 #        value: "false"
@@ -175,8 +174,8 @@ connectors:
 
 # Reduce Elasticsearch replicas and resources to make it run locally
 elasticsearch:
-#  image: # Uncomment these lines and set a value if you want to override the default chart value.
-#    tag: 8.8.2
+  image: # Uncomment these lines and set a value if you want to override the default chart value.
+    tag: 8.12.1 # Uncomment these lines and set a value if you want to override the default chart value.
   master:
     replicaCount: 1
     persistence:
