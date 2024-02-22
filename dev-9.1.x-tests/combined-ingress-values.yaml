@@ -95,7 +95,7 @@ webModeler:
 #      - name: ZEEBE_INSECURE_CONNECTION
 #        value: "false"
       - name: ZEEBE_CA_CERTIFICATE_PATH
-        value: "/home/runner/dev.c8.separated.crt"
+        value: "/home/runner/dev.c8.combined.crt"
 ##      Configuration for DEBUG logging:
 #      - name: LOGGING_LEVEL_IO_GRPC
 #        value: TRACE
@@ -114,7 +114,7 @@ webModeler:
 #      - name: ZEEBE_SECURE_CONNECTION
 #        value: "true"
       - name: ZEEBE_CLIENT_SSL_ROOT_CERTS_PATH
-        value: "/home/runner/dev.c8.separated.crt"
+        value: "/home/runner/dev.c8.combined.crt"
     extraVolumes:
       - name: dev-c8-combined
         secret:
