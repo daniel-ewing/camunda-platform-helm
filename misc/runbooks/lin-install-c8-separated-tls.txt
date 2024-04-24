@@ -35,10 +35,17 @@ openssl req -newkey rsa:4096 \
             -sha256 \
             -days 9999 \
             -noenc \
-            -addext "subjectAltName=DNS:connectors.c8.dev.local,DNS:console.c8.dev.local,DNS:identity.c8.dev.local,DNS:keycloak.c8.dev.local,DNS:modeler.c8.dev.local,DNS:operate.c8.dev.local,DNS:optimize.c8.dev.local,DNS:tasklist.c8.dev.local,DNS:websockets.c8.dev.local,DNS:zeebe.c8.dev.local" \
+            -addext "subjectAltName=DNS:connectors.c8.dev.local,DNS:console.c8.dev.local,DNS:identity.c8.dev.local,DNS:keycloak.c8.dev.local,DNS:modeler.c8.dev.local,DNS:operate.c8.dev.local,DNS:optimize.c8.dev.local,DNS:tasklist.c8.dev.local,DNS:websockets.c8.dev.local,DNS:zeebe.c8.dev.local,DNS:zeebe.grpc.c8.dev.local,DNS:zeebe.rest.c8.dev.local" \
             -out dev.c8.separated.crt \
             -keyout dev.c8.separated.key \
             -subj "/CN=c8.dev.local"
+
+#
+# For Keycloak versions 16.x:
+#
+kubectl create secret generic keycloak.c8.dev.local-tls \
+                              --from-file=tls.crt=/home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separated.crt \
+                              --from-file=tls.key=/home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separated.key
 
 kubectl create secret generic dev-c8-separated \
                               --from-file=tls.crt=/home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separated.crt \
@@ -57,10 +64,6 @@ kubectl create secret generic dev-c8-registry \
 #                                      --docker-password='pw' \
 #                                      --docker-email=first.last@domain.com
 
-cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.1.x-tests
-helm install dev camunda/camunda-platform \
-                 -f separated-ingress-backup-values.yaml \
-                 --version 8.1.6
 
 cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.1.x-tests
 helm install dev camunda/camunda-platform \
@@ -70,47 +73,29 @@ helm install dev camunda/camunda-platform \
 cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.1.x-tests
 helm install dev camunda/camunda-platform \
                  -f separated-ingress-values-v2.yaml \
-                 --version 8.1.15
+                 --version 8.1.26
 
 cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests
 helm install dev camunda/camunda-platform \
                  -f separated-ingress-values.yaml \
-                 --version 8.2.17
+                 --version 8.2.25
 
 cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.3.x-tests
 helm install dev camunda/camunda-platform \
                  -f separated-ingress-values.yaml \
-                 --version 8.3.4
-
-cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.3.x-tests
-helm upgrade dev camunda/camunda-platform \
-                 -f separated-ingress-multi-tenant-values.yaml \
-                 --version 8.3.4
-
-cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.3.x-tests
-helm install dev camunda/camunda-platform \
-                 -f separated-ingress-multi-tenant-external-identity-postgresql-values.yaml \
-                 --version 8.3.5
-
-cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.3.x-tests
-helm install dev camunda/camunda-platform \
-                 -f separated-ingress-backup-values.yaml \
-                 --version 8.3.5
-
-cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.3.x-tests
-helm upgrade dev camunda/camunda-platform \
-                 -f separated-ingress-ilm-values.yaml \
-                 --version 8.3.5
+                 --version 8.3.7
 
 cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-9.1.x-tests
 helm install dev camunda/camunda-platform \
                  -f separated-ingress-values.yaml \
                  --version 9.1.2
 
-cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-9.1.x-tests
-helm upgrade dev camunda/camunda-platform \
+cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-10.0.x-tests
+helm install dev camunda/camunda-platform \
                  -f separated-ingress-values.yaml \
-                 --version 9.1.0
+                 --version 10.0.2
+
+
 
 
 # Terminal 3:

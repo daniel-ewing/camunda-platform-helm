@@ -2,7 +2,7 @@
 # Note: you can change the global.image.tag version value as needed.
 global:
   image:
-    tag: 8.3.5
+    tag: 8.3.7
 
   identity:
     auth:
@@ -34,7 +34,7 @@ zeebe:
   pvcSize: 8Gi
   retention:
     enabled: true
-    minimumAge: 30d
+    minimumAge: 1d
     policyName: zeebe-record-retention-policy
 
 
@@ -59,7 +59,7 @@ operate:
       secretName: "dev-c8-separated"
   retention:
     enabled: true
-    minimumAge: 30d
+    minimumAge: 1d
  
 tasklist:
   ingress:
@@ -70,7 +70,7 @@ tasklist:
       secretName: "dev-c8-separated"
   retention:
     enabled: true
-    minimumAge: 30d
+    minimumAge: 1d
  
 optimize:
   ingress:

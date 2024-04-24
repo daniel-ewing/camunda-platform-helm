@@ -179,8 +179,44 @@ console:
 # Reduce Elasticsearch replicas and resources to make it run locally
 elasticsearch:
   image: # Uncomment these lines and set a value if you want to override the default chart value.
-    tag: 8.12.1 # Uncomment these lines and set a value if you want to override the default chart value.
+    tag: 8.9.2 # Uncomment these lines and set a value if you want to override the default chart value.
   master:
     replicaCount: 1
     persistence:
       size: 8Gi
+      env:
+        - name: BITNAMI_DEBUG
+          value: 'false'
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: ELASTICSEARCH_IS_DEDICATED_NODE
+          value: 'no'
+        - name: ELASTICSEARCH_NODE_ROLES
+          value: master
+        - name: ELASTICSEARCH_TRANSPORT_PORT_NUMBER
+          value: '9300'
+        - name: ELASTICSEARCH_HTTP_PORT_NUMBER
+          value: '9200'
+        - name: ELASTICSEARCH_CLUSTER_NAME
+          value: elastic
+        - name: ELASTICSEARCH_CLUSTER_HOSTS
+          value: >-
+            camunda-platform-elasticsearch-master-hl.optima-uwcm.svc.cluster.local,
+        - name: ELASTICSEARCH_TOTAL_NODES
+          value: '2'
+        - name: ELASTICSEARCH_CLUSTER_MASTER_HOSTS
+          value: >-
+            camunda-platform-elasticsearch-master-0
+            camunda-platform-elasticsearch-master-1
+        - name: ELASTICSEARCH_MINIMUM_MASTER_NODES
+          value: '2'
+        - name: ELASTICSEARCH_ADVERTISED_HOSTNAME
+          value: >-
+            $(MY_POD_NAME).camunda-platform-elasticsearch-master-hl.optima-uwcm.svc.cluster.local
+        - name: ELASTICSEARCH_HEAP_SIZE
+          value: 1024m
+        - name: ELASTICSEARCH_ENABLE_REST_TLS
+          value: 'false'

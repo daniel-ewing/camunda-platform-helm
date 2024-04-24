@@ -2,7 +2,7 @@
 # You can change the global.image.tag version value as needed, just don't delete comment that follows it.
 global:
   image:
-    tag: 8.4.3
+    tag: 8.4.5
 
   ingress:
     enabled: true
@@ -53,12 +53,24 @@ zeebe-gateway:
       secretName: "dev-c8-combined"
 
 operate:
+  # Configuration for backup
+  env:
+    - name: CAMUNDA_OPERATE_BACKUP_REPOSITORY_NAME
+      value: c8-backups
   contextPath: "/operate"
 
 tasklist:
+  # Configuration for backup
+  env:
+    - name: CAMUNDA_TASKLIST_BACKUP_REPOSITORY_NAME
+      value: c8-backups
   contextPath: "/tasklist"
 
 optimize:
+  # Configuration for backup
+  env:
+    - name: CAMUNDA_OPTIMIZE_BACKUP_REPOSITORY_NAME
+      value: c8-backups
   contextPath: "/optimize"
 
 identity:
@@ -143,6 +155,17 @@ console:
 elasticsearch:
   image: # Uncomment these lines and set a value if you want to override the default chart value.
     tag: 8.12.1 # Uncomment these lines and set a value if you want to override the default chart value.
+  # Configuration for backups
+  security:
+    enabled: false
+  snapshotRepoPath: "/usr/share/elasticsearch/c8-backups"
+  extraVolumes:
+    - name: c8-backups
+      persistentVolumeClaim:
+        claimName: c8-backups
+  extraVolumeMounts:
+    - name: c8-backups
+      mountPath: /usr/share/elasticsearch/c8-backups
   master:
     replicaCount: 1
     persistence:

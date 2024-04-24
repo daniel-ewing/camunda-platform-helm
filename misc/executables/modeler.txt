@@ -1,3 +1,5 @@
+export DEBUG=*
+export ZEEBE_NODE_LOG_LEVEL=DEBUG
 export GRPC_VERBOSITY=DEBUG
 export GRPC_TRACE=all
 

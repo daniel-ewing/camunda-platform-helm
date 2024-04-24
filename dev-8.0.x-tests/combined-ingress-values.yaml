@@ -2,7 +2,7 @@
 # You can change the global.image.tag version value as needed, just don't delete comment that follows it.
 global:
   image:
-    tag: 8.0.13
+    tag: 8.0.0
 
   identity:
     auth:

@@ -2,7 +2,7 @@
 # Note: you can change the global.image.tag version value as needed.
 global:
   image:
-    tag: 8.2.15
+    tag: 8.2.25
 
   identity:
     auth:
@@ -32,9 +32,9 @@ zeebe:
  
 zeebe-gateway:
   replicas: 1
-#  env:
-#    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
-#      value: none
+  env:
+    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
+      value: none
   ingress:
     enabled: true
     host: "zeebe.c8.dev.local"
@@ -97,7 +97,7 @@ identity:
 webModeler:
   enabled: true
   image:
-    tag: 8.2.5
+#    tag: 8.2.12 # Uncomment this line and set a value if you want to override the default chart value.
     pullSecrets:
       - name: dev-c8-registry
   restapi:

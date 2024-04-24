@@ -4,33 +4,10 @@ Reference - https://docs.camunda.io/docs/self-managed/platform-deployment/helm-k
 helm repo add camunda https://helm.camunda.io
 helm repo update
 
-
 # Install the dev deployment using the appropriate values.yaml:
-helm install dev camunda/camunda-platform \
-    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/core-values.yaml
-
-helm install dev camunda/camunda-platform \
-    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/combined-ingress-values.yaml
-
-helm install dev camunda/camunda-platform \
-    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/combined-ingress-tls-values.yaml
-
-helm install dev camunda/camunda-platform \
-    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/separate-ingress-tls-values.yaml
-
-helm install dev camunda/camunda-platform \
-    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/separate-ingress-tls-modeler-values.yaml
-
-helm install dev camunda/camunda-platform \
-    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/separate-ingress-tls-backup-values.yaml
-
-helm install dev camunda/camunda-platform \
-    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/separate-ingress-tls-modeler-prometheus-values.yaml
-
 helm install dev camunda/camunda-platform \
     -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.1.x/separated-ingress-tls-keycloak-secrets-values.yaml \
     --version 8.1.7
-
 
 # Run the minikube tunnel for ingress:
 minikube tunnel
@@ -65,30 +42,8 @@ kubectl port-forward dev-web-modeler-webapp-bf55f545d-k5k7h 8070:8070 &
 kubectl port-forward svc/dev-elasticsearch 9200:9200 &
 kubectl port-forward svc/dev-postgresql 5432:5432 &
 
-    
 # Get a list of helm deployments:
 helm list
-
-# Reload the values.yaml:
-helm upgrade dev camunda/camunda-platform \
-    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/core-values.yaml
-
-helm upgrade dev camunda/camunda-platform \
-    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/combined-ingress-values.yaml
-
-helm upgrade dev camunda/camunda-platform \
-    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/combined-ingress-tls-values.yaml
-
-helm upgrade dev camunda/camunda-platform \
-    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/separate-ingress-tls-values.yaml
-
-helm upgrade dev camunda/camunda-platform \
-    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/separate-ingress-tls-modeler-values.yaml
-
-helm upgrade dev camunda/camunda-platform \
-    -f /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev/separate-ingress-tls-backup-values.yaml
-
-
 
 # Before you delete all remaining PVCs, you can check with dry-run first:
 kubectl delete persistentvolumeclaim --all --dry-run=client

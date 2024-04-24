@@ -22,14 +22,26 @@ kubectl cp /<path-to-file>/<file-name> <pod-name>:<fully-qualified-file-name> -c
 # Create a resource from a file (ConfigMap, PVC, etc.):
 kubectl create -f file.yaml
 
-# Get deployments:
+# Get deployments and statefulsets:
 kubectl get deployments
+kubectl get statefulsets
 
 # Scale a deployment:
 kubectl scale deploy <deployment> --replicas=<n>
+
 kubectl scale deploy dev-optimize --replicas=0
 kubectl scale deploy dev-operate --replicas=0
 kubectl scale deploy dev-tasklist --replicas=0
+kubectl scale deploy dev-zeebe-gateway --replicas=0
+kubectl scale statefulsets dev-zeebe --replicas=0
+kubectl scale statefulsets dev-elasticsearch-master --replicas=0
+
+kubectl scale deploy dev-optimize --replicas=1
+kubectl scale deploy dev-operate --replicas=1
+kubectl scale deploy dev-tasklist --replicas=1
+kubectl scale deploy dev-zeebe-gateway --replicas=1
+kubectl scale statefulsets dev-zeebe --replicas=1
+kubectl scale statefulsets dev-elasticsearch-master --replicas=1
 
 # Scale a replica set - a set of pod(s):
 kubectl scale rs/<replicaSet> --replicas=<n>
@@ -39,10 +51,13 @@ helm search repo camunda/camunda-platform --versions
 
 # Get the complete values.yaml for a specific version of a helm chart:
 helm show values camunda/camunda-platform --version 8.0.7 >~/temp/values-8.0.7.yaml
-helm show values camunda/camunda-platform --version 8.1.23 >~/temp/values-8.1.23.yaml
-helm show values camunda/camunda-platform --version 8.2.22 >~/temp/values-8.2.22.yaml
-helm show values camunda/camunda-platform --version 8.3.7 >~/temp/values-8.3.7.yaml
+helm show values camunda/camunda-platform --version 8.1.26 >~/temp/values-8.1.26.yaml
+helm show values camunda/camunda-platform --version 8.2.25 >~/temp/values-8.2.25.yaml
+helm show values camunda/camunda-platform --version 8.3.10 >~/temp/values-8.3.10.yaml
 helm show values camunda/camunda-platform --version 9.1.2 >~/temp/values-9.1.2.yaml
+helm show values camunda/camunda-platform --version 9.2.0 >~/temp/values-9.2.0.yaml
+helm show values camunda/camunda-platform --version 9.3.3 >~/temp/values-9.3.3.yaml
+helm show values camunda/camunda-platform --version 10.0.2 >~/temp/values-10.0.2.yaml
 
 helm show values bitnami/postgresql >~/temp/postgresql-values.yaml
 
@@ -52,6 +67,12 @@ helm install dev-debug camunda/camunda-platform \
                  --version 8.2.5 \
                  --dry-run --debug \
                  >~/temp/dev-debug.log
+
+# Get the generated configMap from a given template based on the supplied values.yaml:
+helm template camunda/camunda-platform \
+              -f separated-ingress-values.yaml \
+              --version 10.0.2 \
+              --show-only templates/identity/configmap.yaml
 
 # Get deployed chart version:
 helm list <--namespace default>

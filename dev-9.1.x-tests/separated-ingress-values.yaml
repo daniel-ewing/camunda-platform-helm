@@ -104,6 +104,7 @@ identity:
 
 webModeler:
   enabled: true
+#  enabled: false
   image:
 #    tag: 8.4.1 # Uncomment this line and set a value if you want to override the default chart value.
     pullSecrets:
@@ -158,6 +159,7 @@ webModeler:
 
 postgresql:
   enabled: true
+#  enabled: false
   auth:
     password: SetThisToMakeLoginEasy
     postgresPassword: SetThisToMakeLoginEasy

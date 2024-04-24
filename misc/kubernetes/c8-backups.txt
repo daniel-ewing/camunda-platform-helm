@@ -104,10 +104,10 @@ curl --request POST 'http://localhost:8092/actuator/backup' \
 -H 'content-type: application/json' \
 -d '{ "backupId": "202308091816" }'
 
-# Helm Charts > 8.3.0
-curl -kLv --request POST 'http://localhost:8092/actuator/backups' \
+# Helm Charts >= 8.3.0
+curl --request POST 'http://localhost:8092/actuator/backups' \
 -H 'content-type: application/json' \
--d '{ "backupId": "202401311131" }'
+-d '{ "backupId": "202403261132" }'
 
 curl --request GET 'http://localhost:8092/actuator/backup/202308091816'
 
@@ -117,11 +117,17 @@ exit
 9. Be sure to save the output file names in the backup set, these names are required to restore.
 
 
-9. Open the Operate CLI, create the backup, monitor the status, then exit when completed:
+10. Open the Operate CLI, create the backup, monitor the status, then exit when completed:
 
 kubectl exec --stdin --tty <dev-operate-pod-name-here> -- /bin/bash
 
+# Helm Charts < 8.3.0
 curl --request POST 'http://localhost:8080/actuator/backup' \
+-H 'content-type: application/json' \
+-d '{ "backupId": "202308091816" }'
+
+# Helm Charts >= 8.3.0
+curl --request POST 'http://localhost:8080/actuator/backups' \
 -H 'content-type: application/json' \
 -d '{ "backupId": "202308091816" }'
 
@@ -130,21 +136,36 @@ curl --request GET 'http://localhost:8080/actuator/backup/202308091816'
 exit
 
 
-9. Save the output file names in the backup set, these names are required to restore.
+11. Save the output file names in the backup set, these names are required to restore.
 
 
-10. Open the Tasklist CLI, create the backup, monitor the status, then exit when completed:
+12. Open the Tasklist CLI, create the backup, monitor the status, then exit when completed:
 
 kubectl exec --stdin --tty <dev-tasklist-pod-name-here> -- /bin/bash
 
+# Helm Charts < 8.3.0
 curl --request POST 'http://localhost:8080/actuator/backup' \
 -H 'content-type: application/json' \
--d '{ "backupId": "backup1" }'
+-d '{ "backupId": "202308091816" }'
+
+# Helm Charts >= 8.3.0
+curl --request POST 'http://localhost:8080/actuator/backups' \
+-H 'content-type: application/json' \
+-d '{ "backupId": "202308091817" }'
 
 exit
 
 
-9. Save the output file names in the backup set, these names are required to restore.
+13. Save the output file names in the backup set, these names are required to restore.
 
 
+14. Open the Elasticsearch CLI, create the Zeebe exported indices backup snapshot, and exit the Elasticsearch CLI:
 
+kubectl exec --stdin --tty dev-elasticsearch-master-0 -- /bin/bash
+
+curl -X PUT 'http://localhost:9200/_snapshot/c8-backups/camunda_zeebe_records_backup_20240326?pretty' \
+-H 'content-type: application/json' -d \
+'{
+   "indices": "zeebe-record*",
+   "feature_states": ["none"]
+}'
