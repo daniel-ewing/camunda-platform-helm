@@ -69,10 +69,10 @@ helm install dev-debug camunda/camunda-platform \
                  >~/temp/dev-debug.log
 
 # Get the generated configMap from a given template based on the supplied values.yaml:
-helm template camunda/camunda-platform \
-              -f separated-ingress-values.yaml \
-              --version 10.0.2 \
-              --show-only templates/identity/configmap.yaml
+helm template dev camunda/camunda-platform \
+                  -f separated-ingress-values.yaml \
+                  --version 10.0.2 \
+                  --show-only templates/identity/configmap.yaml
 
 # Get deployed chart version:
 helm list <--namespace default>
