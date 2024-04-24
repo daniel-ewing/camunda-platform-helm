@@ -4,6 +4,9 @@ global:
   image:
     tag: 8.5.0
 
+  multitenancy:
+    enabled: false
+
   identity:
     auth:
       publicIssuerUrl: "https://keycloak.c8.dev.local/auth/realms/camunda-platform"
