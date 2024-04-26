@@ -102,12 +102,12 @@ kubectl create secret generic dev-identity-secrets \
                               --from-literal=connectors-secret=SetThisToMakeUpgradeEasy
 
 
-kubectl create secret generic dev-identity-keycloak-secrets \
+kubectl create secret generic dev-keycloak-secrets \
                               --from-literal=admin-password=SetThisToMakeLoginEasy \
                               --from-literal=management-password=SetThisToMakeLoginEasy \
 
 
-kubectl create secret generic dev-identity-keycloak-postgresql-secrets \
+kubectl create secret generic dev-postgresql-secrets \
                               --from-literal=password=SetThisToMakeLoginEasy \
                               --from-literal=postgres-password=SetThisToMakeLoginEasy
 
@@ -130,8 +130,8 @@ kubectl create secret generic dev-postgresql-web-modeler \
 kubectl delete secret dev-c8-separated
 kubectl delete secret dev-c8-registry
 kubectl delete secret dev-identity-secrets
-kubectl delete secret dev-identity-keycloak-secrets
-kubectl delete secret dev-identity-keycloak-postgresql-secrets
+kubectl delete secret dev-keycloak-secrets
+kubectl delete secret dev-postgresql-secrets
 kubectl delete secret dev-modeler-postgresql-secrets
 kubectl delete secret dev-connectors-identity-secret
 kubectl delete secret dev-postgresql-web-modeler
