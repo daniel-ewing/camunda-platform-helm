@@ -108,7 +108,7 @@ identity:
       secretName: "dev-c8-separated"
   externalDatabase:
     enabled: true
-    host: 192.168.253.144
+    host: database.dev.local
     port: 5432
     username: identity
     database: identity
