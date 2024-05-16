@@ -3,8 +3,8 @@
 global:
   multitenancy:
     enabled: true
-  image:
-    tag: 8.5.0
+#  image:
+#    tag:
 
   identity:
     auth:
@@ -99,6 +99,9 @@ optimize:
  
 identity:
   fullURL: "https://identity.c8.dev.local"
+  env:
+    - name: RESOURCE_PERMISSIONS_ENABLED
+      value: "true"
   ingress:
     enabled: true
     host: "identity.c8.dev.local"

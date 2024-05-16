@@ -92,8 +92,14 @@ helm install dev camunda/camunda-platform \
 
 cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-10.0.x-tests
 helm install dev camunda/camunda-platform \
-                 -f separated-ingress-external-identity-db-values.yaml \
+                 -f separated-ingress-external-postgresql-values.yaml \
                  --version 10.0.5
+
+cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-10.0.x-tests
+helm template dev camunda/camunda-platform \
+                 -f separated-ingress-external-postgresql-values.yaml \
+                 --version 10.0.5 > ~/temp/results.yaml
+
 
 
 

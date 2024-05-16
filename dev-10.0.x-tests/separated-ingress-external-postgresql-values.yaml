@@ -132,6 +132,14 @@ identityKeycloak:
   auth:
     adminPassword: SetThisToMakeLoginEasy
     managementPassword: SetThisToMakeLoginEasy
+  postgresql:
+    enabled: false
+  externalDatabase:
+    host: database.dev.local
+    port: 5432
+    user: keycloak
+    password: Camunda1
+    database: keycloak
 
 webModeler:
   enabled: true
@@ -139,6 +147,10 @@ webModeler:
     pullSecrets:
       - name: dev-c8-registry
   restapi:
+    externalDatabase:
+      url: jdbc:postgresql://database.dev.local:5432/modeler
+      user: modeler
+      password: Camunda1
     mail:
       fromAddress: "no-reply@camunda.com"
     env:
@@ -181,9 +193,6 @@ webModeler:
       tls:
         enabled: true
         secretName: "dev-c8-separated"
-
-postgresql:
-  enabled: true
 
 connectors:
   ingress:
