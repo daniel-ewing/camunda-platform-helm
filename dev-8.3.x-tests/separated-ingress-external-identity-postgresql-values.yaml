@@ -1,8 +1,10 @@
 # Chart values for the Camunda Platform 8 Helm chart in separate ingress setup. 
 # Note: you can change the global.image.tag version value as needed.
 global:
+  multitenancy:
+    enabled: true
   image:
-    tag: 8.3.9
+    tag: 8.3.4
 
   identity:
     auth:
@@ -90,6 +92,9 @@ identity:
       auth:
         password: SetThisToMakeLoginEasy
         postgresPassword: SetThisToMakeLoginEasy
+  env:
+    - name: RESOURCE_PERMISSIONS_ENABLED
+      value: "true"
   ingress:
     enabled: true
     host: "identity.c8.dev.local"
@@ -97,10 +102,14 @@ identity:
       enabled: true
       secretName: "dev-c8-separated"
   postgresql:
+    enabled: false
+  externalDatabase:
     enabled: true
-    auth:
-      password: SetThisToMakeLoginEasy
-      postgresPassword: SetThisToMakeLoginEasy
+    host: database.dev.local
+    port: 5432
+    username: identity
+    database: identity
+    password: Camunda1
 
 webModeler:
   enabled: true

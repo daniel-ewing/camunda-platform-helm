@@ -82,18 +82,18 @@ helm install dev camunda/camunda-platform \
 
 cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.3.x-tests
 helm install dev camunda/camunda-platform \
-                 -f separated-ingress-values.yaml \
-                 --version 8.3.7
+                 -f separated-ingress-multi-tenant-external-identity-postgresql-values.yaml \
+                 --version 8.3.12
 
-cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-9.1.x-tests
+cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-9.3.x-tests
 helm install dev camunda/camunda-platform \
                  -f separated-ingress-values.yaml \
-                 --version 9.1.2
+                 --version 9.3.3
 
 cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-10.0.x-tests
 helm install dev camunda/camunda-platform \
-                 -f separated-ingress-values.yaml \
-                 --version 10.0.2
+                 -f separated-ingress-external-identity-db-values.yaml \
+                 --version 10.0.5
 
 
 

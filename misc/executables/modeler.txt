@@ -25,3 +25,6 @@ DEBUG=* ZEEBE_NODE_LOG_LEVEL=DEBUG GRPC_VERBOSITY=DEBUG GRPC_TRACE=all ./camunda
 
 cd /home/administrator/software/camunda/camunda-modeler/camunda-modeler-5.12.1-linux-x64
 DEBUG=* ZEEBE_NODE_LOG_LEVEL=DEBUG GRPC_VERBOSITY=DEBUG GRPC_TRACE=all ./camunda-modeler --zeebe-ssl-certificate="/home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separated.crt"
+
+cd /home/administrator/software/camunda/camunda-modeler/camunda-modeler-5.22.0-linux-x64
+./camunda-modeler --zeebe-ssl-certificate="/home/administrator/software/camunda/camunda-platform-8/certificates/dev.c8.separated.crt"

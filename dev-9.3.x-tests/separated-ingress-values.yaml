@@ -2,7 +2,7 @@
 # Note: you can change the global.image.tag version value as needed.
 global:
   image:
-    tag: 8.3.9
+    tag: 8.4.3
 
   identity:
     auth:
@@ -71,7 +71,22 @@ optimize:
  
 identity:
   fullURL: "https://identity.c8.dev.local"
+  ingress:
+    enabled: true
+    host: "identity.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separated"
+  postgresql:
+    enabled: true
+    auth:
+      password: SetThisToMakeLoginEasy
+      postgresPassword: SetThisToMakeLoginEasy
   keycloak:
+    postgresql:
+      auth:
+        password: SetThisToMakeLoginEasy
+        postgresPassword: SetThisToMakeLoginEasy
     extraEnvVars:
       - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
         value: "true"
@@ -86,26 +101,12 @@ identity:
     auth:
       adminPassword: SetThisToMakeLoginEasy
       managementPassword: SetThisToMakeLoginEasy
-    postgresql:
-      auth:
-        password: SetThisToMakeLoginEasy
-        postgresPassword: SetThisToMakeLoginEasy
-  ingress:
-    enabled: true
-    host: "identity.c8.dev.local"
-    tls:
-      enabled: true
-      secretName: "dev-c8-separated"
-  postgresql:
-    enabled: true
-    auth:
-      password: SetThisToMakeLoginEasy
-      postgresPassword: SetThisToMakeLoginEasy
 
 webModeler:
   enabled: true
+#  enabled: false
   image:
-#    tag: 8.3.2 # Uncomment this line and set a value if you want to override the default chart value.
+#    tag: 8.4.1 # Uncomment this line and set a value if you want to override the default chart value.
     pullSecrets:
       - name: dev-c8-registry
   restapi:
@@ -158,6 +159,7 @@ webModeler:
 
 postgresql:
   enabled: true
+#  enabled: false
   auth:
     password: SetThisToMakeLoginEasy
     postgresPassword: SetThisToMakeLoginEasy
@@ -169,6 +171,12 @@ connectors:
     tls:
       enabled: true
       secretName: "dev-c8-separated"
+
+#
+# WARNING: Console is currently under development and should not be used yet.
+#
+console:
+  enabled: false
 
 # Reduce Elasticsearch replicas and resources to make it run locally
 elasticsearch:

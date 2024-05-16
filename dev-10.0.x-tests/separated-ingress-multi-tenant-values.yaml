@@ -1,14 +1,18 @@
 # Chart values for the Camunda Platform 8 Helm chart in separate ingress setup. 
 # Note: you can change the global.image.tag version value as needed.
 global:
+  multitenancy:
+    enabled: true
   image:
-    tag: 8.3.9
+    tag: 8.5.0
 
   identity:
     auth:
       publicIssuerUrl: "https://keycloak.c8.dev.local/auth/realms/camunda-platform"
       connectors:
         existingSecret: SetThisToMakeHelmUpgradesEasy
+      identity:
+        redirectUrl: "http://identity.c8.dev.local"
       operate:
         existingSecret: SetThisToMakeHelmUpgradesEasy
         redirectUrl: "https://operate.c8.dev.local"
@@ -26,6 +30,23 @@ global:
       zeebe:
         existingSecret: SetThisToMakeHelmUpgradesEasy
 
+  postgresql:
+    auth:
+      password: SetThisToMakeLoginEasy
+      postgresPassword: SetThisToMakeLoginEasy
+
+console:
+  enabled: true
+  image:
+    pullSecrets:
+      - name: dev-c8-registry
+  ingress:
+    enabled: true
+    host: "console.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separated"
+
 # Reduce Zeebe and Gateway replicas and resources to make it run locally
 zeebe:
   clusterSize: 1
@@ -33,18 +54,25 @@ zeebe:
   replicationFactor: 1
   pvcSize: 8Gi
  
-zeebe-gateway:
+zeebeGateway:
   replicas: 1
-#  env:
-#    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
-#      value: none
+  env:
+    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
+      value: none
   ingress:
-    enabled: true
-    host: "zeebe.c8.dev.local"
-    tls:
+    grpc:
       enabled: true
-      secretName: "dev-c8-separated"
- 
+      host: "zeebe.c8.dev.local"
+      tls:
+        enabled: true
+        secretName: "dev-c8-separated"
+    rest:
+      enabled: true
+      host: "zeebe.c8.dev.local"
+      tls:
+        enabled: true
+        secretName: "dev-c8-separated"
+
 operate:
   ingress:
     enabled: true
@@ -71,49 +99,41 @@ optimize:
  
 identity:
   fullURL: "https://identity.c8.dev.local"
-  keycloak:
-    extraEnvVars:
-      - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
-        value: "true"
-    ingress:
-      enabled: true
-      hostname: "keycloak.c8.dev.local"
-      tls: true
-      extraTls:
-        - secretName: dev-c8-separated
-          hosts:
-            - keycloak.c8.dev.local
-    auth:
-      adminPassword: SetThisToMakeLoginEasy
-      managementPassword: SetThisToMakeLoginEasy
-    postgresql:
-      auth:
-        password: SetThisToMakeLoginEasy
-        postgresPassword: SetThisToMakeLoginEasy
   ingress:
     enabled: true
     host: "identity.c8.dev.local"
     tls:
       enabled: true
       secretName: "dev-c8-separated"
-  postgresql:
+
+identityPostgresql:
+  enabled: true
+
+identityKeycloak:
+  extraEnvVars:
+    - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
+      value: "true"
+  ingress:
     enabled: true
-    auth:
-      password: SetThisToMakeLoginEasy
-      postgresPassword: SetThisToMakeLoginEasy
+    hostname: "keycloak.c8.dev.local"
+    tls: true
+    extraTls:
+      - secretName: dev-c8-separated
+        hosts:
+          - keycloak.c8.dev.local
+  auth:
+    adminPassword: SetThisToMakeLoginEasy
+    managementPassword: SetThisToMakeLoginEasy
 
 webModeler:
   enabled: true
   image:
-#    tag: 8.3.2 # Uncomment this line and set a value if you want to override the default chart value.
     pullSecrets:
       - name: dev-c8-registry
   restapi:
     mail:
       fromAddress: "no-reply@camunda.com"
     env:
-#      - name: ZEEBE_INSECURE_CONNECTION
-#        value: "false"
       - name: ZEEBE_CA_CERTIFICATE_PATH
         value: "/home/runner/dev.c8.separated.crt"
 ##      Configuration for DEBUG logging:
@@ -131,8 +151,6 @@ webModeler:
         subPath: tls.crt
   webapp:
     env:
-#      - name: ZEEBE_SECURE_CONNECTION
-#        value: "true"
       - name: ZEEBE_CLIENT_SSL_ROOT_CERTS_PATH
         value: "/home/runner/dev.c8.separated.crt"
     extraVolumes:
@@ -158,9 +176,6 @@ webModeler:
 
 postgresql:
   enabled: true
-  auth:
-    password: SetThisToMakeLoginEasy
-    postgresPassword: SetThisToMakeLoginEasy
 
 connectors:
   ingress:
@@ -172,8 +187,8 @@ connectors:
 
 # Reduce Elasticsearch replicas and resources to make it run locally
 elasticsearch:
-  image: # Uncomment these lines and set a value if you want to override the default chart value.
-    tag: 8.12.1 # Uncomment these lines and set a value if you want to override the default chart value.
+#  image: # Uncomment these lines and set a value if you want to override the default chart value.
+#    tag: 8.12.2 # Uncomment these lines and set a value if you want to override the default chart value.
   master:
     replicaCount: 1
     persistence:

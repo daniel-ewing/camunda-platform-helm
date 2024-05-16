@@ -51,13 +51,14 @@ helm search repo camunda/camunda-platform --versions
 
 # Get the complete values.yaml for a specific version of a helm chart:
 helm show values camunda/camunda-platform --version 8.0.7 >~/temp/values-8.0.7.yaml
-helm show values camunda/camunda-platform --version 8.1.26 >~/temp/values-8.1.26.yaml
-helm show values camunda/camunda-platform --version 8.2.25 >~/temp/values-8.2.25.yaml
-helm show values camunda/camunda-platform --version 8.3.10 >~/temp/values-8.3.10.yaml
+helm show values camunda/camunda-platform --version 8.1.27 >~/temp/values-8.1.27.yaml
+helm show values camunda/camunda-platform --version 8.2.27 >~/temp/values-8.2.27.yaml
+helm show values camunda/camunda-platform --version 8.3.12 >~/temp/values-8.3.12.yaml
+helm show values camunda/camunda-platform --version 9.0.2 >~/temp/values-9.0.2.yaml
 helm show values camunda/camunda-platform --version 9.1.2 >~/temp/values-9.1.2.yaml
 helm show values camunda/camunda-platform --version 9.2.0 >~/temp/values-9.2.0.yaml
-helm show values camunda/camunda-platform --version 9.3.3 >~/temp/values-9.3.3.yaml
-helm show values camunda/camunda-platform --version 10.0.2 >~/temp/values-10.0.2.yaml
+helm show values camunda/camunda-platform --version 9.3.4 >~/temp/values-9.3.4.yaml
+helm show values camunda/camunda-platform --version 10.0.5 >~/temp/values-10.0.5.yaml
 
 helm show values bitnami/postgresql >~/temp/postgresql-values.yaml
 
