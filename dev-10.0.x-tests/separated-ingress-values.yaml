@@ -54,9 +54,9 @@ zeebe:
  
 zeebeGateway:
   replicas: 1
-#  env:
-#    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
-#      value: none
+  env:
+    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
+      value: none
   ingress:
     grpc:
       enabled: true
