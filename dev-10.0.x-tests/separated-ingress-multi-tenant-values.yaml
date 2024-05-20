@@ -56,19 +56,19 @@ zeebe:
  
 zeebeGateway:
   replicas: 1
-  env:
-    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
-      value: none
+#  env:
+#    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
+#      value: none
   ingress:
     grpc:
       enabled: true
-      host: "zeebe.c8.dev.local"
+      host: "grpc.zeebe.c8.dev.local"
       tls:
         enabled: true
         secretName: "dev-c8-separated"
     rest:
       enabled: true
-      host: "zeebe.c8.dev.local"
+      host: "rest.zeebe.c8.dev.local"
       tls:
         enabled: true
         secretName: "dev-c8-separated"

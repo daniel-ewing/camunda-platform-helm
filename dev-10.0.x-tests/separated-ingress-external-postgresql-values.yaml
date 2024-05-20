@@ -60,13 +60,13 @@ zeebeGateway:
   ingress:
     grpc:
       enabled: true
-      host: "zeebe.c8.dev.local"
+      host: "grpc.zeebe.c8.dev.local"
       tls:
         enabled: true
         secretName: "dev-c8-separated"
     rest:
       enabled: true
-      host: "zeebe.c8.dev.local"
+      host: "rest.zeebe.c8.dev.local"
       tls:
         enabled: true
         secretName: "dev-c8-separated"
