@@ -78,7 +78,7 @@ operate:
     tls:
       enabled: true
       secretName: "dev-c8-separated"
- 
+
 tasklist:
   ingress:
     enabled: true
@@ -108,6 +108,7 @@ identityPostgresql:
   enabled: true
 
 identityKeycloak:
+  extraStartupArgs: "--hostname-url=https://keycloak.c8.dev.local/auth"
   extraEnvVars:
     - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
       value: "true"
@@ -132,6 +133,12 @@ webModeler:
     mail:
       fromAddress: "no-reply@camunda.com"
     env:
+      - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
+        value: "https://keycloak.c8.dev.local/auth/realms/camunda-platform"
+      - name: RESTAPI_OAUTH2_TOKEN_ISSUER_BACKEND_URL
+        value: "https://keycloak.c8.dev.local/auth/realms/camunda-platform"
+      - name: RESTAPI_OAUTH2_TOKEN_ISSUER
+        value: "https://keycloak.c8.dev.local/auth/realms/camunda-platform"
       - name: ZEEBE_CA_CERTIFICATE_PATH
         value: "/home/runner/dev.c8.separated.crt"
 ##      Configuration for DEBUG logging:
