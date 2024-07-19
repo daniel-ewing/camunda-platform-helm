@@ -1,0 +1,79 @@
+# Get repos - one time only:
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo add external-dns https://kubernetes-sigs.github.io/external-dns
+helm repo add cert-manager https://charts.jetstack.io
+
+# Terminal 1:
+cd /home/administrator/software/camunda/camunda-platform-8/aws/c8-terraform-aws
+terraform apply
+
+aws eks update-kubeconfig --name dan-eks
+
+export CERT_MANAGER_IRSA_ARN=$(terraform output -raw cert_manager_arn)
+export EXTERNAL_DNS_IRSA_ARN=$(terraform output -raw external_dns_arn)
+
+export REGION=us-east-1
+export DOMAIN_NAME=dan.eabpm.de
+export MAIL=dan@eabpm.de
+export INGRESS_HELM_CHART_VERSION="4.10.1"
+export EXTERNAL_DNS_HELM_CHART_VERSION="1.14.4"
+export CERT_MANAGER_HELM_CHART_VERSION="1.14.5"
+export CAMUNDA_HELM_CHART_VERSION="10.0.5"
+
+cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-10.0.x-tests
+helm install ingress-nginx ingress-nginx/ingress-nginx \
+                           -f aws-ingress-nginx-values.yaml \
+                           --version $INGRESS_HELM_CHART_VERSION \
+                           --namespace ingress-nginx \
+                           --create-namespace
+
+helm install external-dns external-dns/external-dns \
+                          -f aws-external-dns-values.yaml \
+                          --version $EXTERNAL_DNS_HELM_CHART_VERSION \
+                          --namespace external-dns \
+                          --create-namespace
+
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v$CERT_MANAGER_HELM_CHART_VERSION/cert-manager.crds.yaml
+
+helm install cert-manager cert-manager/cert-manager \
+                          -f aws-cert-manager-values.yaml \
+                          --version $CERT_MANAGER_HELM_CHART_VERSION \
+                          --namespace cert-manager \
+                          --create-namespace
+
+kubectl apply -f aws-cluster-issuer-values.yaml
+
+kubectl create namespace dev
+
+kubectl create secret generic dev-c8-registry \
+                              --from-file=.dockerconfigjson=/home/administrator/software/commands/config-files/aws-dev-c8-registry-config.json \
+                              --type=kubernetes.io/dockerconfigjson \
+                              --namespace dev
+
+helm install dev camunda/camunda-platform \
+                 -f aws-combined-ingress-values.yaml \
+                 --version $CAMUNDA_HELM_CHART_VERSION \
+                 --namespace dev \
+                 --create-namespace
+
+kgp -n dev
+k get secrets -n dev
+
+kgp -n cert-manager
+kl cert-manager-64d797fd56-2xmvq -n cert-manager
+
+
+hdel dev -n dev
+kdpvc -n dev
+kdel secret -n dev --field-selector type=Opaque
+kdel secret -n dev --field-selector type=kubernetes.io/tls
+kdel secret -n dev --field-selector type=kubernetes.io/dockerconfigjson
+hdel cert-manager -n cert-manager
+kdel secret -n cert-manager --field-selector type=Opaque
+hdel external-dns -n external-dns
+hdel ingress-nginx -n ingress-nginx
+kdel secret -n ingress-nginx --field-selector type=Opaque
+
+
+cd /home/administrator/software/camunda/camunda-platform-8/aws/c8-terraform-aws
+terraform destroy

@@ -1,0 +1,6 @@
+image:
+  tag: 2.5.0
+opensearchHosts: "http://opensearch-cluster-master:9200"
+config:
+  opensearch_dashboards.yml: |
+     opensearch_security.enabled: false

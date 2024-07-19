@@ -1,8 +1,8 @@
 # Chart values for the Camunda Platform 8 Helm chart in combined ingress setup.
 # You can change the global.image.tag version value as needed, just don't delete comment that follows it.
 global:
-  image:
-    tag: 8.4.3
+#  image:
+#    tag:
 
   ingress:
     enabled: true

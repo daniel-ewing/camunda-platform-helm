@@ -3,8 +3,8 @@
 global:
   multitenancy:
     enabled: true
-  image:
-    tag: 8.3.4
+#  image:
+#    tag:
 
   identity:
     auth:

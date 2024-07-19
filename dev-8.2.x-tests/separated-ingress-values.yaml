@@ -1,8 +1,8 @@
 # Chart values for the Camunda Platform 8 Helm chart in separate ingress setup. 
 # Note: you can change the global.image.tag version value as needed.
 global:
-  image:
-    tag: 8.2.25
+#  image:
+#    tag:
 
   identity:
     auth:
@@ -32,9 +32,9 @@ zeebe:
  
 zeebe-gateway:
   replicas: 1
-  env:
-    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
-      value: none
+#  env:
+#    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
+#      value: none
   ingress:
     enabled: true
     host: "zeebe.c8.dev.local"

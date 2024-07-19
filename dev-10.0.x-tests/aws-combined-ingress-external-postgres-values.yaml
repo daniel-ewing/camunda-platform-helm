@@ -1,0 +1,160 @@
+# Chart values for the Camunda Platform 8 Helm chart in separate ingress setup. 
+# Note: you can change the global.image.tag version value as needed.
+global:
+#  image:
+#    tag:
+
+  ingress:
+    enabled: true
+    host: "c8.dev.aws"
+    tls:
+      enabled: true
+      secretName: "aws-dev-c8-combined"
+
+  identity:
+    auth:
+      publicIssuerUrl: "https://c8.dev.aws/auth/realms/camunda-platform"
+      connectors:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+      identity:
+        redirectUrl: "http://c8.dev.aws/identity"
+      operate:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://c8.dev.aws/operate"
+      tasklist:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://c8.dev.aws/tasklist"
+      optimize:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://c8.dev.aws/optimize"
+      webModeler:
+        redirectUrl: "https://c8.dev.aws/modeler"
+      console:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl:  "https://c8.dev.aws/console"
+      zeebe:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+
+console:
+  contextPath: "/console"
+  enabled: true
+  image:
+    pullSecrets:
+      - name: aws-dev-c8-registry
+
+zeebe:
+  pvcSize: 32Gi
+ 
+zeebeGateway:
+#  env:
+#    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
+#      value: none
+  ingress:
+    grpc:
+      enabled: true
+      host: "grpc.zeebe.c8.dev.aws"
+      tls:
+        enabled: true
+        secretName: "aws-dev-c8-combined"
+    rest:
+      enabled: true
+      host: "rest.zeebe.c8.dev.aws"
+      tls:
+        enabled: true
+        secretName: "aws-dev-c8-combined"
+
+operate:
+  contextPath: "/operate"
+
+tasklist:
+  contextPath: "/tasklist"
+
+optimize:
+  contextPath: "/optimize"
+
+identity:
+  fullURL: "https://identity.c8.dev.aws"
+  contextPath: "/identity"
+  externalDatabase:
+    enabled: true
+    host: dan-postgresql.cluster-cjes2qk4afat.us-east-1.rds.amazonaws.com
+    port: 5432
+    username: postgres
+    database: camunda
+    password: SetThisToMakeLoginEasy
+
+identityKeycloak:
+  extraEnvVars:
+    - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
+      value: "true"
+  ingress:
+    enabled: true
+    hostname: "c8.dev.aws"
+    tls: true
+    extraTls:
+      - secretName: aws-dev-c8-combined
+        hosts:
+          - c8.dev.aws
+  auth:
+    adminPassword: SetThisToMakeLoginEasy
+    managementPassword: SetThisToMakeLoginEasy
+  postgresql:
+    enabled: false
+  externalDatabase:
+    host: dan-postgresql.cluster-cjes2qk4afat.us-east-1.rds.amazonaws.com
+    port: 5432
+    username: postgres
+    database: camunda
+    password: SetThisToMakeLoginEasy
+
+webModeler:
+  enabled: true
+  image:
+    pullSecrets:
+      - name: aws-dev-c8-registry
+  contextPath: "/modeler"
+  restapi:
+    externalDatabase:
+      url: jdbc:postgresql://dan-postgresql.cluster-cjes2qk4afat.us-east-1.rds.amazonaws.com:5432/camunda
+      user: camunda
+      password: SetThisToMakeLoginEasy
+    mail:
+      fromAddress: "no-reply@camunda.com"
+    env:
+      - name: ZEEBE_CA_CERTIFICATE_PATH
+        value: "/home/runner/aws.dev.c8.combined.crt"
+##      Configuration for DEBUG logging:
+#      - name: LOGGING_LEVEL_IO_GRPC
+#        value: TRACE
+#      - name: LOGGING_LEVEL_IO_CAMUNDA_MODELER
+#        value: DEBUG
+    extraVolumes:
+      - name: aws-dev-c8-combined
+        secret:
+          secretName: aws-dev-c8-combined
+    extraVolumeMounts:
+      - name: aws-dev-c8-combined
+        mountPath: "/home/runner/aws.dev.c8.combined.crt"
+        subPath: tls.crt
+  webapp:
+    env:
+      - name: ZEEBE_CLIENT_SSL_ROOT_CERTS_PATH
+        value: "/home/runner/aws.dev.c8.combined.crt"
+    extraVolumes:
+      - name: aws-dev-c8-combined
+        secret:
+          secretName: aws-dev-c8-combined
+    extraVolumeMounts:
+      - name: aws-dev-c8-combined
+        mountPath: "/home/runner/aws.dev.c8.combined.crt"
+        subPath: tls.crt
+
+connectors:
+  contextPath: "/connectors"
+
+elasticsearch:
+#  image: # Uncomment these lines and set a value if you want to override the default chart value.
+#    tag: # Uncomment these lines and set a value if you want to override the default chart value.
+#  master: # Uncomment these lines and set a value if you want to override the default chart value.
+#    replicaCount:  # Uncomment these lines and set a value if you want to override the default chart value.
+

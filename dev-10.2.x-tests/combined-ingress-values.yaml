@@ -1,0 +1,160 @@
+# Chart values for the Camunda Platform 8 Helm chart in separate ingress setup. 
+# Note: you can change the global.image.tag version value as needed.
+global:
+#  image:
+#    tag:
+
+  ingress:
+    enabled: true
+    host: "c8.dev.local"
+    tls:
+      enabled: true
+      secretName: dev-c8-combined
+
+  identity:
+    auth:
+      publicIssuerUrl: "https://c8.dev.local/auth/realms/camunda-platform"
+      connectors:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+      identity:
+        redirectUrl: "http://c8.dev.local/identity"
+      operate:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://c8.dev.local/operate"
+      tasklist:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://c8.dev.local/tasklist"
+      optimize:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://c8.dev.local/optimize"
+      webModeler:
+        redirectUrl: "https://c8.dev.local/modeler"
+      console:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl:  "https://c8.dev.local/console"
+      zeebe:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+
+  postgresql:
+    auth:
+      password: SetThisToMakeLoginEasy
+      postgresPassword: SetThisToMakeLoginEasy
+
+console:
+  contextPath: "/console"
+  enabled: true
+  image:
+    pullSecrets:
+      - name: dev-c8-registry
+
+# Reduce Zeebe and Gateway replicas and resources to make it run locally
+zeebe:
+  clusterSize: 1
+  partitionCount: 1
+  replicationFactor: 1
+  pvcSize: 8Gi
+
+zeebeGateway:
+  replicas: 1
+#  env:
+#    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
+#      value: none
+  ingress:
+    grpc:
+      enabled: true
+      host: "grpc.zeebe.c8.dev.local"
+      tls:
+        enabled: true
+        secretName: dev-c8-combined
+    rest:
+      enabled: true
+      host: rest.zeebe.c8.dev.local
+      tls:
+        enabled: true
+        secretName: dev-c8-combined
+
+operate:
+  contextPath: "/operate"
+
+tasklist:
+  contextPath: "/tasklist"
+
+optimize:
+  contextPath: "/optimize"
+
+identity:
+  fullURL: "https://c8.dev.local/identity"
+  contextPath: "/identity"
+
+identityPostgresql:
+  enabled: true
+
+identityKeycloak:
+  extraEnvVars:
+    - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
+      value: "true"
+#  ingress:
+#    enabled: true
+#    hostname: "c8.dev.local"
+#    tls: true
+#    extraTls:
+#      - secretName: dev-c8-combined
+#        hosts:
+#          - c8.dev.local
+  auth:
+    adminPassword: SetThisToMakeLoginEasy
+    managementPassword: SetThisToMakeLoginEasy
+
+webModeler:
+  enabled: true
+  image:
+    pullSecrets:
+      - name: dev-c8-registry
+  contextPath: "/modeler"
+  restapi:
+    mail:
+      fromAddress: "no-reply@eabpm.de"
+#    env:
+#      - name: ZEEBE_CA_CERTIFICATE_PATH
+#        value: "/home/runner/dev.c8.combined.crt"
+##      Configuration for DEBUG logging:
+#      - name: LOGGING_LEVEL_IO_GRPC
+#        value: TRACE
+#      - name: LOGGING_LEVEL_IO_CAMUNDA_MODELER
+#        value: DEBUG
+#    extraVolumes:
+#      - name: dev-c8-combined
+#        secret:
+#          secretName: dev-c8-combined
+#    extraVolumeMounts:
+#      - name: dev-c8-combined
+#        mountPath: "/home/runner/dev.c8.combined.crt"
+#        subPath: tls.crt
+#  webapp:
+#    env:
+#      - name: ZEEBE_CLIENT_SSL_ROOT_CERTS_PATH
+#        value: "/home/runner/dev.c8.combined.crt"
+#    extraVolumes:
+#      - name: dev-c8-combined
+#        secret:
+#          secretName: dev-c8-combined
+#    extraVolumeMounts:
+#      - name: dev-c8-combined
+#        mountPath: "/home/runner/dev.c8.combined.crt"
+#        subPath: tls.crt
+
+postgresql:
+  enabled: true
+
+connectors:
+  contextPath: "/connectors"
+
+# Reduce Elasticsearch replicas and resources to make it run locally
+elasticsearch:
+#  image: # Uncomment these lines and set a value if you want to override the default chart value.
+#    tag: 8.12.2 # Uncomment these lines and set a value if you want to override the default chart value.
+  master:
+    replicaCount: 1
+    persistence:
+      size: 8Gi
+

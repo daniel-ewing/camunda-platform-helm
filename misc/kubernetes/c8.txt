@@ -40,8 +40,10 @@ kubectl port-forward svc/dev-optimize 8083:80 &
 kubectl port-forward svc/dev-web-modeler-webapp 8070:80 &
 kubectl port-forward dev-web-modeler-webapp-bf55f545d-k5k7h 8070:8070 &
 kubectl port-forward svc/dev-elasticsearch 9200:9200 &
-kubectl port-forward svc/dev-postgresql 5432:5432 &
 kubectl port-forward svc/dev-identity-postgresql 5432:5432 &
+kubectl port-forward svc/dev-postgresql 5432:5432 &
+kubectl port-forward svc/dev-postgresql-web-modeler 5432:5432 &
+
 
 # Get a list of helm deployments:
 helm list

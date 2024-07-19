@@ -1,0 +1,160 @@
+# Chart values for the Camunda Platform 8 Helm chart in separate ingress setup. 
+# Note: you can change the global.image.tag version value as needed.
+global:
+#  image:
+#    tag:
+
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/tls-acme: "true"
+    host: "dan.eabpm.de"
+    tls:
+      enabled: true
+      secretName: dev-c8-combined-global
+
+  identity:
+    auth:
+      publicIssuerUrl: "https://dan.eabpm.de/auth/realms/camunda-platform"
+      connectors:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+      identity:
+        redirectUrl: "http://dan.eabpm.de/identity"
+      operate:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://dan.eabpm.de/operate"
+      tasklist:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://dan.eabpm.de/tasklist"
+      optimize:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://dan.eabpm.de/optimize"
+      webModeler:
+        redirectUrl: "https://dan.eabpm.de/modeler"
+      console:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl:  "https://dan.eabpm.de/console"
+      zeebe:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+
+  postgresql:
+    auth:
+      password: SetThisToMakeLoginEasy
+      postgresPassword: SetThisToMakeLoginEasy
+
+console:
+  contextPath: "/console"
+  enabled: true
+  image:
+    pullSecrets:
+      - name: dev-c8-registry
+
+zeebe:
+  pvcSize: 32Gi
+ 
+zeebeGateway:
+#  env:
+#    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
+#      value: none
+  ingress:
+    grpc:
+      enabled: true
+      annotations:
+        kubernetes.io/tls-acme: "true"
+      host: "grpc.zeebe.dan.eabpm.de"
+      tls:
+        enabled: true
+        secretName: dev-c8-combined-zeebe-grpc
+    rest:
+      enabled: true
+      annotations:
+        kubernetes.io/tls-acme: "true"
+      host: rest.zeebe.dan.eabpm.de
+      tls:
+        enabled: true
+        secretName: dev-c8-combined-zeebe-rest
+
+operate:
+  contextPath: "/operate"
+
+tasklist:
+  contextPath: "/tasklist"
+
+optimize:
+  contextPath: "/optimize"
+
+identity:
+  fullURL: "https://dan.eabpm.de/identity"
+  contextPath: "/identity"
+
+identityPostgresql:
+  enabled: true
+
+identityKeycloak:
+  extraEnvVars:
+    - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
+      value: "true"
+  ingress:
+    enabled: true
+    hostname: "dan.eabpm.de"
+    tls: true
+    extraTls:
+      - secretName: dev-c8-combined-keycloak
+        hosts:
+          - dan.eabpm.de
+    annotations:
+      kubernetes.io/tls-acme: "true"
+  auth:
+    adminPassword: SetThisToMakeLoginEasy
+    managementPassword: SetThisToMakeLoginEasy
+
+webModeler:
+  enabled: true
+  image:
+    pullSecrets:
+      - name: dev-c8-registry
+  contextPath: "/modeler"
+  restapi:
+    mail:
+      fromAddress: "no-reply@eabpm.de"
+#    env:
+#      - name: ZEEBE_CA_CERTIFICATE_PATH
+#        value: "/home/runner/aws.dev.c8.combined.crt"
+##      Configuration for DEBUG logging:
+#      - name: LOGGING_LEVEL_IO_GRPC
+#        value: TRACE
+#      - name: LOGGING_LEVEL_IO_CAMUNDA_MODELER
+#        value: DEBUG
+#    extraVolumes:
+#      - name: aws-dev-c8-combined
+#        secret:
+#          secretName: aws-dev-c8-combined
+#    extraVolumeMounts:
+#      - name: aws-dev-c8-combined
+#        mountPath: "/home/runner/aws.dev.c8.combined.crt"
+#        subPath: tls.crt
+#  webapp:
+#    env:
+#      - name: ZEEBE_CLIENT_SSL_ROOT_CERTS_PATH
+#        value: "/home/runner/aws.dev.c8.combined.crt"
+#    extraVolumes:
+#      - name: aws-dev-c8-combined
+#        secret:
+#          secretName: aws-dev-c8-combined
+#    extraVolumeMounts:
+#      - name: aws-dev-c8-combined
+#        mountPath: "/home/runner/aws.dev.c8.combined.crt"
+#        subPath: tls.crt
+
+postgresql:
+  enabled: true
+
+connectors:
+  contextPath: "/connectors"
+
+#elasticsearch:
+#  image: # Uncomment these lines and set a value if you want to override the default chart value.
+#    tag: # Uncomment these lines and set a value if you want to override the default chart value.
+#  master: # Uncomment these lines and set a value if you want to override the default chart value.
+#    replicaCount:  # Uncomment these lines and set a value if you want to override the default chart value.
+

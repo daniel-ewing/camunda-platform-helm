@@ -28,11 +28,6 @@ global:
       zeebe:
         existingSecret: SetThisToMakeHelmUpgradesEasy
 
-  postgresql:
-    auth:
-      password: SetThisToMakeLoginEasy
-      postgresPassword: SetThisToMakeLoginEasy
-
 console:
   enabled: true
   image:
@@ -97,9 +92,9 @@ optimize:
  
 identity:
   fullURL: "https://identity.c8.dev.local"
-  env:
-    - name: RESOURCE_PERMISSIONS_ENABLED
-      value: "true"
+#  env:
+#    - name: RESOURCE_PERMISSIONS_ENABLED
+#      value: "true"
   ingress:
     enabled: true
     host: "identity.c8.dev.local"
@@ -113,9 +108,6 @@ identity:
     username: identity
     database: identity
     password: Camunda1
-
-#identityPostgresql:
-#  enabled: false
 
 identityKeycloak:
   extraEnvVars:

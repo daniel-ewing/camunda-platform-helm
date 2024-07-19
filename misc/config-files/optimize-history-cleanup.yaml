@@ -1,0 +1,47 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: optimize-configuration
+  namespace: default
+data:
+  environment-config.yaml: |
+    ---
+    ###############################################################################
+    #                                                                             #
+    #                     Optimize Environment Configuration                      #
+    #                                                                             #
+    ###############################################################################
+
+    # Note: for all possible configuration options please have a look
+    #       at the Optimize documentation:
+    #       https://docs.camunda.org/optimize/${docs.version}/technical-guide/setup/configuration/
+    historyCleanup:
+      # cron expression for when the cleanup should run
+      cronTrigger: '*/2 * * * *'
+      # default time to live (ttl) for data, when reached the corresponding process/decision/event instances will get cleaned up
+      # Format is ISO_8601 duration  https://en.wikipedia.org/wiki/ISO_8601#Durations
+      ttl: 'P1D'
+      processDataCleanup:
+        # switch for the Camunda process data cleanup, defaults to false
+        enabled: true
+        # type of process data cleanup to perform, possible values:
+        # 'all' - delete everything related to the process instance
+        # 'variables' - only delete associated variables of a process instance
+        cleanupMode: 'all'
+        # process definition specific configuration parameters that will overwrite the general parameters (ttl, processDataCleanupMode)
+        # for the specific processDefinition key
+        perProcessDefinitionConfig:
+        # 'myProcessDefinitionKey':
+        #   ttl: 'P2M'
+        #   cleanupMode: 'variables'
+      decisionDataCleanup:
+        # switch for the Camunda decision data cleanup, defaults to false
+        enabled: false
+        # decision definition specific configuration parameters that will overwrite the general parameters (ttl)
+        # for the specific decisionDefinition key
+        perDecisionDefinitionConfig:
+        # 'myDecisionDefinitionKey':
+        #   ttl: 'P2M'
+      ingestedEventCleanup:
+        # switch for the ingested event data cleanup, defaults to false
+        enabled: false

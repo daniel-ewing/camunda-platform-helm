@@ -1,0 +1,291 @@
+# Chart values for the Camunda Platform 8 Helm chart in separate ingress setup. 
+# Note: you can change the global.image.tag version value as needed.
+global:
+#  image:
+#    tag:
+
+  elasticsearch:
+    enabled: false
+
+  opensearch:
+    enabled: true
+    url:
+      protocol: http
+      host: opensearch-cluster-master
+      port: 9200
+
+  identity:
+    auth:
+      publicIssuerUrl: "https://keycloak.c8.dev.local/auth/realms/camunda-platform"
+      connectors:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+      identity:
+        redirectUrl: "http://identity.c8.dev.local"
+      operate:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://operate.c8.dev.local"
+      tasklist:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://tasklist.c8.dev.local"
+      optimize:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl: "https://optimize.c8.dev.local"
+      webModeler:
+        redirectUrl: "https://modeler.c8.dev.local"
+      console:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+        redirectUrl:  "https://console.c8.dev.local"
+      zeebe:
+        existingSecret: SetThisToMakeHelmUpgradesEasy
+
+  postgresql:
+    auth:
+      password: SetThisToMakeLoginEasy
+      postgresPassword: SetThisToMakeLoginEasy
+
+console:
+  enabled: true
+  image:
+    pullSecrets:
+      - name: dev-c8-registry
+  ingress:
+    enabled: true
+    host: "console.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separated"
+
+# Reduce Zeebe and Gateway replicas and resources to make it run locally
+zeebe:
+  clusterSize: 1
+  partitionCount: 1
+  replicationFactor: 1
+  env:
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_AWS_ENABLED
+      value: "false"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_BULK_DELAY
+      value: "5"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_BULK_MEMORYLIMIT
+      value: "10485760"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_BULK_SIZE
+      value: "1000"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_COMMAND
+      value: "false"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_COMMANDDISTRIBUTION
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_CREATETEMPLATE
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_DECISION
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_DECISIONEVALUATION
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_DECISIONREQUIREMENTS
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_DEPLOYMENT
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_DEPLOYMENTDISTRIBUTION
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_ERROR
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_ESCALATION
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_EVENT
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_INCIDENT
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_JOB
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_JOBBATCH
+      value: "false"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_MESSAGE
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_MESSAGESTARTSUBSCRIPTION
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_MESSAGESUBSCRIPTION
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_NUMBEROFREPLICAS
+      value: "2"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_NUMBEROFSHARDS
+      value: "3"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_PREFIX
+      value: zeebe-record
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_PROCESS
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_PROCESSEVENT
+      value: "false"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_PROCESSINSTANCE
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_PROCESSINSTANCECREATION
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_PROCESSINSTANCEMODIFICATION
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_PROCESSMESSAGESUBSCRIPTION
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_REJECTION
+      value: "false"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_RESOURCEDELETION
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_SIGNAL
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_SIGNALSUBSCRIPTION
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_TIMER
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_VARIABLE
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_INDEX_VARIABLEDOCUMENT
+      value: "true"
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_REQUESTTIMEOUTMS
+      value: "1000"
+#    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_ARGS_URL
+#      value: http://opensearch-cluster-master:9200
+    - name: ZEEBE_BROKER_EXPORTERS_OPENSEARCH_CLASSNAME
+      value: io.camunda.zeebe.exporter.opensearch.OpensearchExporter
+  pvcSize: 8Gi
+
+zeebeGateway:
+  replicas: 1
+#  env:
+#    - name: ZEEBE_GATEWAY_SECURITY_AUTHENTICATION_MODE
+#      value: none
+  ingress:
+    grpc:
+      enabled: true
+      host: "grpc.zeebe.c8.dev.local"
+      tls:
+        enabled: true
+        secretName: "dev-c8-separated"
+    rest:
+      enabled: true
+      host: "rest.zeebe.c8.dev.local"
+      tls:
+        enabled: true
+        secretName: "dev-c8-separated"
+
+operate:
+#  env:
+#    - name: CAMUNDA_OPERATE_OPENSEARCH_URL
+#      value: http://opensearch-cluster-master:9200
+#    - name: CAMUNDA_OPERATE_ZEEBEOPENSEARCH_URL
+#      value: http://opensearch-cluster-master:9200
+#    - name: CAMUNDA_OPERATE_DATABASE
+#      value: opensearch
+  ingress:
+    enabled: true
+    host: "operate.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separated"
+
+tasklist:
+#  env:
+#    - name: CAMUNDA_TASKLIST_OPENSEARCH_URL
+#      value: http://opensearch-cluster-master:9200
+#    - name: CAMUNDA_TASKLIST_DATABASE
+#      value: opensearch
+#    - name: CAMUNDA_TASKLIST_ZEEBEOPENSEARCH_URL
+#      value: http://opensearch-cluster-master:9200
+  ingress:
+    enabled: true
+    host: "tasklist.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separated"
+
+optimize:
+  image:
+    tag: 8.5.1
+  ingress:
+    enabled: true
+    host: "optimize.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separated"
+ 
+identity:
+  fullURL: "https://identity.c8.dev.local"
+  ingress:
+    enabled: true
+    host: "identity.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separated"
+
+identityPostgresql:
+  enabled: true
+
+identityKeycloak:
+  extraEnvVars:
+    - name: KEYCLOAK_PROXY_ADDRESS_FORWARDING
+      value: "true"
+  ingress:
+    enabled: true
+    hostname: "keycloak.c8.dev.local"
+    tls: true
+    extraTls:
+      - secretName: dev-c8-separated
+        hosts:
+          - keycloak.c8.dev.local
+  auth:
+    adminPassword: SetThisToMakeLoginEasy
+    managementPassword: SetThisToMakeLoginEasy
+
+webModeler:
+  enabled: true
+  image:
+    pullSecrets:
+      - name: dev-c8-registry
+  restapi:
+    mail:
+      fromAddress: "no-reply@camunda.com"
+    env:
+      - name: ZEEBE_CA_CERTIFICATE_PATH
+        value: "/home/runner/dev.c8.separated.crt"
+##      Configuration for DEBUG logging:
+#      - name: LOGGING_LEVEL_IO_GRPC
+#        value: TRACE
+#      - name: LOGGING_LEVEL_IO_CAMUNDA_MODELER
+#        value: DEBUG
+    extraVolumes:
+      - name: dev-c8-separated
+        secret:
+          secretName: dev-c8-separated
+    extraVolumeMounts:
+      - name: dev-c8-separated
+        mountPath: "/home/runner/dev.c8.separated.crt"
+        subPath: tls.crt
+  webapp:
+    env:
+      - name: ZEEBE_CLIENT_SSL_ROOT_CERTS_PATH
+        value: "/home/runner/dev.c8.separated.crt"
+    extraVolumes:
+      - name: dev-c8-separated
+        secret:
+          secretName: dev-c8-separated
+    extraVolumeMounts:
+      - name: dev-c8-separated
+        mountPath: "/home/runner/dev.c8.separated.crt"
+        subPath: tls.crt
+  ingress:
+    enabled: true
+    webapp:
+      host: "modeler.c8.dev.local"
+      tls:
+        enabled: true
+        secretName: "dev-c8-separated"
+    websockets:
+      host: "websockets.c8.dev.local"
+      tls:
+        enabled: true
+        secretName: "dev-c8-separated"
+
+postgresql:
+  enabled: true
+
+connectors:
+  ingress:
+    enabled: true
+    host: "connectors.c8.dev.local"
+    tls:
+      enabled: true
+      secretName: "dev-c8-separated"

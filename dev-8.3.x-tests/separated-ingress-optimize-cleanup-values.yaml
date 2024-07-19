@@ -32,12 +32,7 @@ zeebe:
   partitionCount: 1
   replicationFactor: 1
   pvcSize: 8Gi
-  retention:
-    enabled: true
-    minimumAge: 30d
-    policyName: zeebe-record-retention-policy
-
-
+ 
 zeebe-gateway:
   replicas: 1
 #  env:
@@ -57,9 +52,6 @@ operate:
     tls:
       enabled: true
       secretName: "dev-c8-separated"
-  retention:
-    enabled: true
-    minimumAge: 30d
  
 tasklist:
   ingress:
@@ -68,11 +60,29 @@ tasklist:
     tls:
       enabled: true
       secretName: "dev-c8-separated"
-  retention:
-    enabled: true
-    minimumAge: 30d
  
 optimize:
+  env:
+    - name: CAMUNDA_OPTIMIZE_LOG_LEVEL
+      value: "debug"
+#    - name: CAMUNDA_OPTIMIZE_HISTORY_CLEANUP_CRON_TRIGGER
+#      value: "*/2 * * * *"
+#    - name: CAMUNDA_OPTIMIZE_HISTORY_CLEANUP_TTL
+#      value: "P1D"
+#    - name: CAMUNDA_OPTIMIZE_HISTORY_CLEANUP_PROCESS_DATA_CLEANUP_ENABLED
+#      value: "true"
+#    - name: CAMUNDA_OPTIMIZE_HISTORY_CLEANUP_PROCESS_DATA_CLEANUP_CLEANUP_MODE
+#      value: "all"
+#    - name: CAMUNDA_OPTIMIZE_HISTORY_CLEANUP_PROCESS_DATA_CLEANUP_BATCH_SIZE
+#      value: "10000"
+  extraVolumeMounts:
+    - name: config-volume
+      mountPath: /optimize/config/environment-config.yaml
+      subPath: environment-config.yaml
+  extraVolumes:
+    - name: config-volume
+      configMap:
+        name: optimize-config
   ingress:
     enabled: true
     host: "optimize.c8.dev.local"

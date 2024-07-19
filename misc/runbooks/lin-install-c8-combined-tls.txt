@@ -12,7 +12,7 @@ openssl req -newkey rsa:4096 \
             -sha256 \
             -days 9999 \
             -noenc \
-            -addext "subjectAltName = DNS:c8.dev.local,DNS:zeebe.c8.dev.local" \
+            -addext "subjectAltName = DNS:c8.dev.local,DNS:grpc.zeebe.c8.dev.local,DNS:rest.zeebe.c8.dev.local" \
             -out dev.c8.combined.crt \
             -keyout dev.c8.combined.key \
             -subj "/CN=c8.dev.local"
@@ -63,6 +63,12 @@ cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-
 helm install dev camunda/camunda-platform \
                  -f combined-ingress-backup-values.yaml \
                  --version 9.1.2
+
+cd /home/administrator/software/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-10.0.x-tests
+helm install dev camunda/camunda-platform \
+                 -f combined-ingress-values.yaml \
+                 --version 10.0.5
+
 
 # Terminal 3:
 minikube tunnel
