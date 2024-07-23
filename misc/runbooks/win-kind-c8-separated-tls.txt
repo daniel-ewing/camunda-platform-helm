@@ -1,0 +1,77 @@
+# One time only:
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+helm repo update
+
+# For 3 kind nodes, from terminal 1:
+cd /mnt/c/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/misc/config-files
+kind delete cluster --name 3-node-cluster
+kind create cluster \
+            --config= ./kind/3-node-cluster.yaml \
+            --name 3-node-cluster \
+            --wait 60s
+kubectl create namespace ingress-nginx
+kubectl apply --namespace ingress-nginx \
+              -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+helm upgrade --install kubernetes-dashboard \
+                       kubernetes-dashboard/kubernetes-dashboard \
+                       --create-namespace \
+                       --namespace kubernetes-dashboard
+kubectl apply -f ./kubernetes-dashboard/service-account.yaml
+kubectl apply -f ./kubernetes-dashboard/cluster-role-binding.yaml
+kubectl apply -f ./kubernetes-dashboard/admin-token.yaml
+kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath={".data.token"} | base64 -d
+kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
+https://localhost:8443/
+
+# Terminal 2:
+
+cd /mnt/c/camunda/camunda-platform-8/certificates
+openssl req -newkey rsa:4096 \
+            -x509 \
+            -sha256 \
+            -days 9999 \
+            -noenc \
+            -addext "subjectAltName=DNS:connectors.c8.dev.local,DNS:console.c8.dev.local,DNS:identity.c8.dev.local,DNS:keycloak.c8.dev.local,DNS:modeler.c8.dev.local,DNS:operate.c8.dev.local,DNS:optimize.c8.dev.local,DNS:tasklist.c8.dev.local,DNS:websockets.c8.dev.local,DNS:zeebe.c8.dev.local,DNS:grpc.zeebe.c8.dev.local,DNS:rest.zeebe.c8.dev.local" \
+            -out dev.c8.separated.crt \
+            -keyout dev.c8.separated.key \
+            -subj "/CN=c8.dev.local"
+
+kubectl create namespace dev
+kubectl create secret generic dev-c8-separated \
+                        --from-file=tls.crt=/mnt/c/camunda/camunda-platform-8/certificates/dev.c8.separated.crt \
+                        --from-file=tls.key=/mnt/c/camunda/camunda-platform-8/certificates/dev.c8.separated.key \
+                        --namespace dev
+
+kubectl create secret generic dev-c8-registry \
+                              --from-file=.dockerconfigjson=/mnt/c/camunda/camunda-platform-8/config-files/dev-c8-registry-config.json \
+                              --type=kubernetes.io/dockerconfigjson \
+                              --namespace dev
+
+
+#
+# The following is an alternative to the previous command:
+#
+#kubectl create secret docker-registry dev-c8-registry \
+#                                      --docker-server=a.server \
+#                                      --docker-username=first.last \
+#                                      --docker-password='pw' \
+#                                      --docker-email=first.last@domain.com
+
+helm install dev camunda/camunda-platform \
+    -f /mnt/c/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/separated-ingress-tls-with-modeler-values.yaml \
+	--version 8.2.2
+
+
+helm install dev camunda/camunda-platform \
+    -f /mnt/c/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-8.2.x-tests/separated-ingress-tls-secrets-no-connectors-values.yaml \
+	--version 8.2.2
+
+cd /mnt/c/camunda/camunda-platform-8/daniel-ewing-camunda-platform-helm/dev-10.2.x-tests
+helm upgrade --install dev camunda/camunda-platform \
+                           -f separated-ingress-values.yaml \
+                           --version 10.2.0 \
+                           --create-namespace \
+                           --namespace dev
+
+hdd
+kdpvcd
